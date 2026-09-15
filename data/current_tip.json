@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Uncaught TypeError: 'set' on proxy: trap returned falsish for property Name",
-  "problem": "Am not doing anything fancy, just trying to update a field on Contact in JS of LWC but getting this exception. Uncaught TypeError: 'set' on proxy: trap returned falsish for property 'Name' throws at mydomain/auraFW/javascript/mhontaYdOya4Y_lBu7v9yg/aura_prod.js:2:27687 HTML Code: JS: Apex: On top of my head, am not doing anything wrong, anyone has idea what's wrong with my code? When I print...",
-  "code": "<template>\n\n    <template if:true={wiredContact}>\n\n        {wiredContact.Name}\n\n        <lightning-input value={wiredContact.Name} onchange={updateName}></lightning-input>\n    </template>\n\n</template>",
-  "fixed_code": "this.wiredContact = Object.assign({}, data);",
-  "explanation": "Cached items are set as read-only (because otherwise you could corrupt the cache). If you want a modifiable object, you need to clone it. Based on comments, you can also use the rest parameter syntax in LWC: If you don't care about some mobile browsers, and you're using Lightning Web Security instead of Locker Service , you can also use the structuredClone function, which can handle even recursive structures and...",
-  "source_url": "https://salesforce.stackexchange.com/questions/256761/uncaught-typeerror-set-on-proxy-trap-returned-falsish-for-property-name"
+  "category": "Flow",
+  "problem_title": "What Criteria to use in Process Builder to check for NULL reference?",
+  "problem": "I have a lookup field on account - for other accounts - Name: Account Parent Tiered OBJ How do I check in Process Builder that it's actually empty? Using the Global Constant NULL or: IS Null true both returned the wrong answer [there always seem to be some value there] As debug, I tried to get the id/name/any value form the 'so called not null obj', but I get error: The record couldn’t be saved because it failed to...",
+  "code": " An error occurred at element myRule_1_A1 (FlowRecordUpdate).\nThe flow failed to access the value for myVariable_current.Account_Parent_tiered_Obj__r.Name because it hasn't",
+  "fixed_code": null,
+  "explanation": "Always check your conditions - and than check them again, or just rewrite the process. My error resided in the simple solution: The condition #3 that I used, was wrong. Instead of asking for: Account->Account_Parent_tiered_Obj__c - I had to filter by: Account->Parent->Account_Parent_tiered_Obj__c The lesson really is to recheck your criteria.",
+  "source_url": "https://salesforce.stackexchange.com/questions/104812/what-criteria-to-use-in-process-builder-to-check-for-null-reference"
 }
