@@ -1,0 +1,137 @@
+[
+{
+  "id": 1,
+  "category": "Apex",
+  "problem_title": "Too Many SOQL Queries: 101",
+  "problem": "Your trigger works fine in testing with 5 records. In production, a bulk update of 200 records throws:\n\nSystem.LimitException:\nToo many SOQL queries: 101",
+  "code": "// BAD - query inside the loop\nfor (Account acc : Trigger.new) {\n    List<Contact> cons = [\n        SELECT Id FROM Contact\n        WHERE AccountId = :acc.Id\n    ];\n}",
+  "fixed_code": "// GOOD - one query outside the loop\nMap<Id, List<Contact>> byAccount =\n    new Map<Id, List<Contact>>();\n\nfor (Contact c : [\n    SELECT Id, AccountId FROM Contact\n    WHERE AccountId IN :Trigger.newMap.keySet()\n]) {\n    byAccount.put(c.AccountId, ...);\n}",
+  "explanation": "Salesforce allows only 100 SOQL queries per transaction. A query inside a loop multiplies with every record processed. Always query once outside the loop, then use a Map to look up related records per iteration."
+},
+{
+  "id": 2,
+  "category": "Apex",
+  "problem_title": "Trigger Recursion Won't Stop",
+  "problem": "Updating a record fires the trigger, which updates the record again, which fires the trigger again \u2014 an infinite loop until Salesforce throws a stack depth error.",
+  "code": "trigger AccountTrigger on Account (after update) {\n    for (Account a : Trigger.new) {\n        a.Description = 'Updated';\n        update a; // fires this trigger again!\n    }\n}",
+  "fixed_code": "public class TriggerHandler {\n    private static Boolean isRunning = false;\n\n    public static void run() {\n        if (isRunning) return;\n        isRunning = true;\n        // ... do the work ...\n        isRunning = false;\n    }\n}",
+  "explanation": "A static boolean flag persists for the duration of one transaction. Check it at the start of your handler and set it before doing DML \u2014 this stops the trigger from re-entering itself."
+},
+{
+  "id": 3,
+  "category": "Apex",
+  "problem_title": "Null Pointer on a Perfectly Valid Field",
+  "problem": "acc.Owner.Manager.Email throws a NullPointerException, even though the Account definitely has an Owner.",
+  "code": "String email = acc.Owner.Manager.Email;\n// NPE if Manager is null anywhere in the chain",
+  "fixed_code": "String email = acc?.Owner?.Manager?.Email;\n// safe navigation - returns null instead of throwing",
+  "explanation": "The safe navigation operator (?.) short-circuits the whole expression to null the moment any link in the chain is null, instead of throwing. Available since Apex API v50+."
+},
+{
+  "id": 4,
+  "category": "Flow",
+  "problem_title": "Flow Fails Silently in Production Only",
+  "problem": "Your Record-Triggered Flow works perfectly in the sandbox. In production, records just don't update \u2014 no error banner, nothing in the debug log you can find.",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "Check Setup -> Flows -> your flow -> 'View Details and Versions', then look at 'Login History' style Flow error emails sent to the flow's admin. Also verify Save vs Save & Activate \u2014 an inactive version silently does nothing while looking identical in the builder."
+},
+{
+  "id": 5,
+  "category": "Flow",
+  "problem_title": "Formula Field Shows Blank Instead of 0",
+  "problem": "A number formula field that should show '0' shows completely blank whenever one of the source fields is empty.",
+  "code": "[Amount__c] * [Quantity__c]",
+  "fixed_code": "BLANKVALUE([Amount__c], 0) * BLANKVALUE([Quantity__c], 0)",
+  "explanation": "In both Formulas and Flow, arithmetic on a null number returns null, not zero \u2014 and null displays as blank. Wrap every operand that could be empty in BLANKVALUE() to force it to a real number first."
+},
+{
+  "id": 6,
+  "category": "Flow",
+  "problem_title": "Get Records Returns Nothing, No Error",
+  "problem": "A Get Records element inside a Flow always returns zero results, even though you can see matching records in the object's list view.",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "The most common cause: the Flow runs in 'system context without sharing' or 'user context' and the running user's field-level security or sharing rules quietly filter the record out. Check the flow's run context under Flow properties, and confirm FLS on every filtered field."
+},
+{
+  "id": 7,
+  "category": "LWC",
+  "problem_title": "Data From @wire Is Always Undefined",
+  "problem": "Your component's @wire property is undefined on first render, causing a null reference error in your template.",
+  "code": "@wire(getContacts)\ncontacts; // undefined until data arrives",
+  "fixed_code": "@wire(getContacts)\ncontacts;\n\nget hasContacts() {\n    return this.contacts?.data?.length > 0;\n}",
+  "explanation": "@wire is asynchronous \u2014 the component renders before data arrives. Never assume wired data exists; always guard with optional chaining or a getter, and use template if:true checks in the HTML."
+},
+{
+  "id": 8,
+  "category": "LWC",
+  "problem_title": "Parent-Child Data Update Doesn't Reflect in UI",
+  "problem": "You mutate an array or object property directly, call the same variable name again, but the template just won't re-render with the new value.",
+  "code": "this.items.push(newItem);\n// template doesn't update",
+  "fixed_code": "this.items = [...this.items, newItem];\n// new reference triggers reactivity",
+  "explanation": "LWC's reactivity is based on reference comparison, not deep value comparison. Mutating an array/object in place keeps the same reference, so the framework can't tell anything changed. Always create a new array/object."
+},
+{
+  "id": 9,
+  "category": "SOQL",
+  "problem_title": "Aggregate Query Ignores a WHERE Clause",
+  "problem": "You add a WHERE filter to an aggregate query with GROUP BY, but the totals come back as if the filter wasn't applied at all.",
+  "code": "SELECT AccountId, COUNT(Id)\nFROM Opportunity\nGROUP BY AccountId\nHAVING COUNT(Id) > 5\nWHERE StageName = 'Closed Won'  -- SYNTAX ERROR",
+  "fixed_code": "SELECT AccountId, COUNT(Id)\nFROM Opportunity\nWHERE StageName = 'Closed Won'\nGROUP BY AccountId\nHAVING COUNT(Id) > 5",
+  "explanation": "WHERE filters rows before grouping and must come before GROUP BY. HAVING filters the grouped/aggregated results and must come after. Mixing up the order is a very common SOQL mistake."
+},
+{
+  "id": 10,
+  "category": "SOQL",
+  "problem_title": "Relationship Query Returns Null for a Field You Know Exists",
+  "problem": "Account.Owner.Profile.Name comes back null in your query results, even though every user definitely has a profile.",
+  "code": "SELECT Id, Owner.Profile.Name\nFROM Account",
+  "fixed_code": "-- Check FLS/permissions on Profile object access,\n-- and confirm the relationship depth (5 levels max\n-- for standard, 1 level for custom-to-custom before\n-- Spring '21 dot-notation limits)\nSELECT Id, Owner.Profile.Name\nFROM Account\nWHERE Owner.Profile.Name != null",
+  "explanation": "Traversing relationships in SOQL has depth limits, and the running user's object/field permissions on the parent object silently return null rather than throwing an error. Always check FLS first when a relationship field looks 'missing'."
+},
+{
+  "id": 11,
+  "category": "OmniStudio",
+  "problem_title": "DataRaptor Extract Returns Empty Even Though Data Exists",
+  "problem": "Your DataRaptor Extract preview shows zero results, but you can see the exact record in Salesforce when you search for it manually.",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "Check the Extract's filter values for hardcoded Ids or exact-match strings that don't match your test record's actual data (case-sensitivity matters). Also confirm the running user in preview mode has read access to every field mapped in the output."
+},
+{
+  "id": 12,
+  "category": "OmniStudio",
+  "problem_title": "OmniScript Won't Advance Past a Step",
+  "problem": "Clicking 'Next' on an OmniScript step does nothing \u2014 no error toast, no console error, the user is just stuck.",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "This is almost always a required field that's invisible or mis-validated \u2014 check for a hidden required Text/Checkbox element with no default value, or a Validation element silently failing. Open browser dev tools and check the Console tab for a swallowed JS error."
+},
+{
+  "id": 13,
+  "category": "OmniStudio",
+  "problem_title": "Integration Procedure Times Out on Large Data Sets",
+  "problem": "An Integration Procedure that calls a DataRaptor and loops over 500+ records runs fine with test data but times out in production.",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "Integration Procedures have a 10-second synchronous limit per transaction chain. For large datasets, use a Batch DataRaptor Transform action, or move heavy record processing into an async Apex Remote Action instead of looping inside the IP itself."
+},
+{
+  "id": 14,
+  "category": "Apex",
+  "problem_title": "Test Class Passes Alone, Fails in Full Run",
+  "problem": "Your test class passes every time you run it individually, but fails with unexpected data when run as part of the full test suite.",
+  "code": null,
+  "fixed_code": "@isTest\npublic class MyTest {\n    @TestSetup\n    static void setup() {\n        // creates isolated data for every test method\n    }\n}",
+  "explanation": "Tests can see data left behind by other tests unless properly isolated, or can fail due to org-wide data assumptions (like assuming a specific Record Type Id exists). Use @TestSetup and avoid querying real org data \u2014 create everything your test needs from scratch."
+},
+{
+  "id": 15,
+  "category": "Flow",
+  "problem_title": "Loop Inside Flow Hits Element Limit",
+  "problem": "A Flow processing 300 records in a loop throws 'Too many DML statements: 151' \u2014 nearly identical to the classic Apex bulkification problem.",
+  "code": "// BAD: Update element inside the loop\nLoop [Get Records] -> Update Records (each iteration)",
+  "fixed_code": "// GOOD: collect into a variable, one Update after the loop\nLoop -> Assignment (add to collection)\n... after loop ...\nUpdate Records (the whole collection at once)",
+  "explanation": "Flows have governor limits too. A DML element (Create/Update/Delete Records) inside a loop fires once per record. Collect records into a collection variable during the loop, then perform a single bulk DML operation after it ends."
+}
+]

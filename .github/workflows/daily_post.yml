@@ -1,0 +1,47 @@
+name: Daily Salesforce Tip
+
+on:
+  schedule:
+    - cron: "0 4 * * *"     # 09:30 AM IST
+    - cron: "30 8 * * *"    # 02:00 PM IST
+    - cron: "30 13 * * *"   # 07:00 PM IST
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pillow requests
+
+      - name: Generate today's tip and render card
+        working-directory: scripts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python daily_post.py
+
+      - name: Commit generated files
+        run: |
+          git config user.name "sf-tips-bot"
+          git config user.email "sf-tips-bot@users.noreply.github.com"
+          git add output/*.png data/current_tip.json data/recent_titles.json data/category_state.json data/run_meta.json
+          git commit -m "Auto: daily Salesforce tip $(date -u +%Y-%m-%d)" || echo "Nothing to commit"
+          git push
+
+      - name: Publish to Instagram
+        working-directory: scripts
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: python post_to_instagram.py
