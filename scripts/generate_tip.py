@@ -106,6 +106,8 @@ def fetch_candidate_questions(tag, pagesize=20):
         },
         timeout=30,
     )
+    if not resp.ok:
+        print("Anthropic API error response:", resp.text)
     resp.raise_for_status()
     return resp.json().get("items", [])
 
