@@ -101,6 +101,8 @@ Generate one new tip now."""
         },
         timeout=60,
     )
+    if not resp.ok:
+        print("Anthropic API error response:", resp.text)
     resp.raise_for_status()
     data = resp.json()
     text = "".join(block["text"] for block in data["content"] if block["type"] == "text")
