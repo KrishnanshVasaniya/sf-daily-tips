@@ -1,0 +1,10 @@
+{
+  "id": "daily",
+  "category": "OmniStudio",
+  "problem_title": "Unable to Signup omnistudio enabled developer org",
+  "problem": "I'm trying to signup a OmniStudio Developer org through below url : https://trailhead.salesforce.com/promo/orgs/omnistudiotrails But above url is not working. Please see below screenshot -",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "You can get a Financial Services Cloud trail org that has Omnistudio enabled here . I have used it a few times to test Omnistudio related solutions. I am not sure if it will be suitable for your Trailhead badge that you are doing, but you can always connect it with your Trailhead account and see if you will be able to complete the trails. Good luck!",
+  "source_url": "https://salesforce.stackexchange.com/questions/422237/unable-to-signup-omnistudio-enabled-developer-org"
+}
