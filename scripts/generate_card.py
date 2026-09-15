@@ -198,6 +198,41 @@ def draw_wrap(draw, text, fnt, x, y, max_w, fill, lh, max_lines=None):
     return y
 
 
+def draw_fitted_block(draw, text, font_path, x, y, max_w, max_h, fill,
+                      start_size, min_size, line_height_ratio=1.45, step=2):
+    """Draw text that SHRINKS its font size to fit within max_h, rather than
+    truncating it -- so a longer question keeps (almost) all of its wording,
+    just a little smaller, instead of getting cut off with '...'.
+    Only truncates as a last resort if it still doesn't fit at min_size."""
+    size = start_size
+    while size >= min_size:
+        fnt = font(font_path, size)
+        lh = max(int(size * line_height_ratio), size + 6)
+        lines = wrap(draw, text, fnt, max_w)
+        if lh * len(lines) <= max_h:
+            for ln in lines:
+                draw.text((x, y), ln, font=fnt, fill=fill)
+                y += lh
+            return y
+        size -= step
+
+    # Even the smallest readable size doesn't fit -- truncate gracefully.
+    fnt = font(font_path, min_size)
+    lh = max(int(min_size * line_height_ratio), min_size + 6)
+    lines = wrap(draw, text, fnt, max_w)
+    max_lines = max(1, int(max_h // lh))
+    if len(lines) > max_lines:
+        lines = lines[:max_lines]
+        last = lines[-1]
+        while last and draw.textlength(last + "...", font=fnt) > max_w:
+            last = last[:-1]
+        lines[-1] = last.rstrip() + "..."
+    for ln in lines:
+        draw.text((x, y), ln, font=fnt, fill=fill)
+        y += lh
+    return y
+
+
 def tokenize(line):
     toks = []
     m = re.search(r'(//.*$|--.*$)', line)
@@ -344,22 +379,27 @@ def slide_problem(tip):
     y = big_header(d, "The Problem", x, y, color=(210, 70, 66))
     y += 10
 
-    # Cap the title and problem text to a bounded number of lines so they
-    # can NEVER grow unpredictably tall -- this is what was letting the code
-    # block get pushed past the bottom of the card on longer questions.
-    y = draw_wrap(d, tip["problem_title"], font(HL["b"], 46), x, y, inner_w, INK, 58, max_lines=3) + 14
-    y = draw_wrap(d, tip["problem"], font(F_INTER_R, 30), x, y, inner_w, INK_SOFT, 44, max_lines=6) + 24
+    # Title: shrinks its font size to fit within a bounded box, rather than
+    # cutting text off with "..." -- most titles are short so this rarely
+    # even needs to shrink.
+    y = draw_fitted_block(d, tip["problem_title"], HL["b"], x, y, inner_w, 168,
+                          INK, start_size=46, min_size=34, line_height_ratio=1.26) + 14
+
+    # Problem text: this is the one that was getting cut off early. Give it
+    # a generous height budget and let the font shrink (down to a still
+    # comfortably readable size) so nearly all of it shows, instead of
+    # truncating after a fixed number of lines.
+    y = draw_fitted_block(d, tip["problem"], F_INTER_R, x, y, inner_w, 260,
+                          INK_SOFT, start_size=30, min_size=22, line_height_ratio=1.47) + 24
 
     if tip.get("code"):
-        # Only show the code block if there's real room left for it, and
-        # size it (line count) to whatever space actually remains -- this
-        # guarantees the block always ends before the footer, never past it.
+        # The code block gets whatever real room is left -- sized (or
+        # skipped, if there's truly no room) so it always ends before the
+        # footer, never past it.
         available = (CARD_BOTTOM - FOOTER_RESERVE) - y
         max_lines = int((available - 76) // CODE_LINE_H)
         if max_lines >= MIN_CODE_LINES:
             code_block(img, d, tip["code"], x, y, inner_w, max_lines=max_lines)
-        # else: no safe room for a legible code block -- skip it rather
-        # than let it overflow. The problem text alone still stands fine.
 
     footer(d)
     return img
@@ -378,23 +418,21 @@ def slide_solution(tip):
     y += 10
 
     code = tip.get("fixed_code") or tip.get("code")
-    explanation_lh = 46
     if code:
-        # Reserve room for at least a few lines of explanation after the
-        # code block, then size the code block to whatever's left over.
-        reserved_for_explanation = 4 * explanation_lh + 20
+        # Reserve a minimum for the explanation (it'll still shrink-to-fit
+        # rather than truncate), then size the code block to what's left.
+        reserved_for_explanation = 170
         available = (CARD_BOTTOM - FOOTER_RESERVE) - y - reserved_for_explanation
         max_lines = int((available - 76) // CODE_LINE_H)
         if max_lines >= MIN_CODE_LINES:
             y = code_block(img, d, code, x, y, inner_w, max_lines=max_lines) + 30
         # else: skip the code block, give the explanation the full space below
 
-    # Cap the explanation to whatever vertical room remains before the
-    # footer -- guarantees this text can never run past the card either.
+    # Explanation: shrinks to fit whatever vertical room remains before the
+    # footer, instead of being cut off with "...".
     remaining = (CARD_BOTTOM - FOOTER_RESERVE) - y
-    max_explanation_lines = max(2, int(remaining // explanation_lh))
-    draw_wrap(d, tip["explanation"], font(F_INTER_R, 31), x, y, inner_w, INK,
-             explanation_lh, max_lines=max_explanation_lines)
+    draw_fitted_block(d, tip["explanation"], F_INTER_R, x, y, inner_w, remaining,
+                      INK, start_size=31, min_size=22, line_height_ratio=1.48)
 
     footer(d)
     return img
