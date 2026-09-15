@@ -1,7 +1,8 @@
 """
 Full daily pipeline:
-  1. Call Claude API for one fresh, original tip (generate_tip.py)
-  2. Render the 2-slide carousel (generate_card.py)
+  1. Pull one fresh tip from Salesforce Stack Exchange (generate_tip.py) --
+     free, no API key, never runs out.
+  2. Render the 3-slide carousel (generate_card.py)
   3. Write data/run_meta.json with image paths + caption, for the poster script
 """
 
@@ -15,7 +16,6 @@ META_PATH = os.path.join(DATA_DIR, "run_meta.json")
 
 import generate_tip   # noqa: E402
 import generate_card  # noqa: E402
-import make_reel      # noqa: E402
 
 HASHTAGS_BY_CATEGORY = {
     "Apex": "#Apex #Salesforce #SalesforceDeveloper #ApexCode #SFDC",
@@ -29,10 +29,17 @@ COMMON_TAGS = "#SalesforceTips #SalesforceDeveloper #Trailblazer #CodeNewbie #10
 
 def build_caption(tip):
     tags = HASHTAGS_BY_CATEGORY.get(tip["category"], "") + " " + COMMON_TAGS
+    attribution = ""
+    if tip.get("source_url"):
+        attribution = (
+            f"\n\nOriginally asked on Salesforce Stack Exchange (CC BY-SA): "
+            f"{tip['source_url']}"
+        )
     return (
         f"{tip['problem_title']}\n\n"
         f"\U0001F534 The Problem: {tip['problem']}\n\n"
-        f"\u2705 The Fix: {tip['explanation']}\n\n"
+        f"\u2705 The Fix: {tip['explanation']}"
+        f"{attribution}\n\n"
         f"\U0001F4BE Save this for later & follow @sf_daily_tips for a new "
         f"Salesforce tip every day.\n"
         f"\U0001F4AC Questions? Drop them in the comments \u2193\n\n"
@@ -61,9 +68,11 @@ def main():
     # Only build the Reel video when explicitly requested (BUILD_REEL=1),
     # so carousel runs stay fast and don't require ffmpeg.
     if os.environ.get("BUILD_REEL") == "1":
+        import make_reel
         reel_path = os.path.join(BASE_DIR, "output", "reel.mp4")
         make_reel.main_from_paths(slides, reel_path)
         meta["reel_file"] = os.path.relpath(reel_path, BASE_DIR)
+
     with open(META_PATH, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 

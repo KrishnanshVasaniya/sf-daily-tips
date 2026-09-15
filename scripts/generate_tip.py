@@ -1,58 +1,53 @@
+# -*- coding: utf-8 -*-
 """
-Generates ONE fresh Salesforce Problem->Solution tip using the Claude API.
-Rotates through categories (Apex, Flow, LWC, SOQL, OmniStudio) and avoids
-repeating recent topics by tracking titles already used.
+Generates ONE tip per run by pulling a real, highly-voted, answered question
+from Salesforce Stack Exchange (site: salesforce.stackexchange.com) via their
+free public API. No account, no API key, no cost -- and it never runs out,
+since the community keeps posting new questions.
 
-Requires env var: ANTHROPIC_API_KEY
+Content is CC BY-SA licensed: reused with attribution, which daily_post.py
+adds to the caption automatically (source_url is carried through).
+
+Rotates categories same as before: Apex -> SOQL -> OmniStudio -> LWC -> Flow.
+Tracks used question IDs so the same question is never reposted.
+
 Writes: data/current_tip.json (consumed by generate_card.py)
-Updates: data/recent_titles.json, data/category_state.json
+Updates: data/used_question_ids.json, data/category_state.json
 """
 
 import json
 import os
 import re
-import sys
+import html as html_module
 import requests
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
-RECENT_PATH = os.path.join(DATA_DIR, "recent_titles.json")
+USED_IDS_PATH = os.path.join(DATA_DIR, "used_question_ids.json")
 CATEGORY_STATE_PATH = os.path.join(DATA_DIR, "category_state.json")
 CURRENT_TIP_PATH = os.path.join(DATA_DIR, "current_tip.json")
 
 CATEGORIES = ["Apex", "SOQL", "OmniStudio", "LWC", "Flow"]
-MAX_RECENT_TITLES = 200  # ~2 months of history at 3 posts/day, prevents repeats
+MAX_USED_IDS = 3000  # generous cap; content is effectively infinite so this
+                      # mainly just keeps the tracking file from growing forever
 
-API_URL = "https://api.anthropic.com/v1/messages"
-MODEL = "claude-haiku-4-5-20251001"
+SE_API = "https://api.stackexchange.com/2.3"
+SITE = "salesforce"
 
-SYSTEM_PROMPT = """You write short, technically accurate Salesforce developer tips \
-for an Instagram carousel account. Each tip follows a strict Problem -> Solution \
-format based on a realistic scenario a Salesforce developer would actually hit.
-
-Output ONLY a single JSON object, no markdown fences, no commentary, matching \
-exactly this schema:
-
-{
-  "category": "<one of: Apex, Flow, LWC, SOQL, OmniStudio>",
-  "problem_title": "<short punchy title, under 8 words>",
-  "problem": "<2-3 sentences describing a realistic scenario and what error/symptom \
-appears. Can include a short literal error message on its own line if relevant.>",
-  "code": "<short BAD code snippet showing the problem, or null if not code-specific>",
-  "fixed_code": "<short GOOD code snippet showing the fix, or null if not code-specific>",
-  "explanation": "<2-3 sentences, ~30-45 words, explaining WHY the fix works, \
-written in a warm but precise technical voice>"
+# primary tag first, then fallbacks tried in order if a category comes up empty
+CATEGORY_TAGS = {
+    "Apex": ["apex-code"],
+    "SOQL": ["soql"],
+    "Flow": ["salesforce-flow", "process-builder", "visual-workflow"],
+    "LWC": ["lightning-web-components"],
+    "OmniStudio": ["omnistudio", "vlocity"],
 }
 
-Rules:
-- Must be technically accurate about real Salesforce platform behavior (governor \
-limits, actual API names, actual Flow/LWC/OmniStudio behavior). Never invent fake \
-APIs or fake error messages.
-- code/fixed_code should be short (under 8 lines), illustrative, not full production code.
-- Do not repeat a topic/title from the list of recent titles you're given.
-- Vary the specific sub-topic within the category (e.g. don't always pick governor \
-limits for Apex -- also cover triggers, testing, security, async, etc.)
-"""
+MAX_TEXT_CHARS = 420
+MAX_CODE_LINES = 10
+
+CODE_BLOCK_RE = re.compile(r"<pre>\s*<code>(.*?)</code>\s*</pre>", re.DOTALL)
+TAG_RE = re.compile(r"<[^>]+>")
 
 
 def load_json(path, default):
@@ -75,63 +70,135 @@ def next_category():
     return category
 
 
-def call_claude(category, recent_titles):
-    api_key = os.environ["ANTHROPIC_API_KEY"]
-    recent_list = "\n".join(f"- {t}" for t in recent_titles[-40:]) or "(none yet)"
+def extract_first_code_block(body_html):
+    """Pull the first <pre><code> block out of Stack Exchange's HTML body."""
+    m = CODE_BLOCK_RE.search(body_html or "")
+    if not m:
+        return None
+    code = html_module.unescape(m.group(1))
+    lines = code.strip("\n").split("\n")
+    if len(lines) > MAX_CODE_LINES:
+        lines = lines[:MAX_CODE_LINES] + ["..."]
+    return "\n".join(lines)
 
-    user_prompt = f"""Category for this tip: {category}
 
-Recent titles already used (do NOT repeat these topics):
-{recent_list}
+def strip_html_to_text(body_html, max_chars=MAX_TEXT_CHARS):
+    """Remove code blocks + tags, decode entities, collapse whitespace, truncate cleanly."""
+    text = CODE_BLOCK_RE.sub(" ", body_html or "")
+    text = TAG_RE.sub(" ", text)
+    text = html_module.unescape(text)
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) > max_chars:
+        text = text[:max_chars].rsplit(" ", 1)[0] + "..."
+    return text
 
-Generate one new tip now."""
 
-    resp = requests.post(
-        API_URL,
-        headers={
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json",
+def fetch_candidate_questions(tag, pagesize=20):
+    resp = requests.get(
+        f"{SE_API}/questions",
+        params={
+            "order": "desc",
+            "sort": "votes",
+            "tagged": tag,
+            "site": SITE,
+            "filter": "withbody",
+            "pagesize": pagesize,
         },
-        json={
-            "model": MODEL,
-            "max_tokens": 700,
-            "system": SYSTEM_PROMPT,
-            "messages": [{"role": "user", "content": user_prompt}],
-        },
-        timeout=60,
+        timeout=30,
     )
     resp.raise_for_status()
-    data = resp.json()
-    text = "".join(block["text"] for block in data["content"] if block["type"] == "text")
+    return resp.json().get("items", [])
 
-    # strip stray markdown fences if the model adds them anyway
-    cleaned = re.sub(r"^```(json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
-    tip = json.loads(cleaned)
+
+def fetch_top_answer(question_id):
+    resp = requests.get(
+        f"{SE_API}/questions/{question_id}/answers",
+        params={
+            "order": "desc",
+            "sort": "votes",
+            "site": SITE,
+            "filter": "withbody",
+            "pagesize": 5,
+        },
+        timeout=30,
+    )
+    resp.raise_for_status()
+    items = resp.json().get("items", [])
+    return items[0] if items else None
+
+
+def pick_question(category, used_ids):
+    tags = CATEGORY_TAGS.get(category, [category.lower()])
+    for tag in tags:
+        try:
+            candidates = fetch_candidate_questions(tag)
+        except requests.RequestException as e:
+            print(f"Warning: fetch failed for tag '{tag}': {e}")
+            continue
+        for q in candidates:
+            if q["question_id"] in used_ids:
+                continue
+            if not q.get("is_answered"):
+                continue
+            if q.get("score", 0) < 1:
+                continue
+            return q, tag
+    return None, None
+
+
+def build_tip(category, question):
+    answer = fetch_top_answer(question["question_id"])
+    if not answer:
+        return None
+
+    q_body = question.get("body", "")
+    a_body = answer.get("body", "")
+
+    tip = {
+        "id": "daily",
+        "category": category,
+        "problem_title": html_module.unescape(question["title"]),
+        "problem": strip_html_to_text(q_body),
+        "code": extract_first_code_block(q_body),
+        "fixed_code": extract_first_code_block(a_body),
+        "explanation": strip_html_to_text(a_body),
+        "source_url": question["link"],
+    }
+    # Guarantee explanation is never empty (fall back to problem text's tail case)
+    if not tip["explanation"]:
+        tip["explanation"] = "See the full answer on Salesforce Stack Exchange (link in caption)."
     return tip
 
 
 def main():
-    category = next_category()
-    recent_titles = load_json(RECENT_PATH, [])
+    used_ids = load_json(USED_IDS_PATH, [])
 
-    tip = call_claude(category, recent_titles)
+    # Try the rotation category first; if it's genuinely out of fresh
+    # questions, fall through to the next categories rather than fail the run.
+    tried = []
+    tip = None
+    question = None
+    for _ in range(len(CATEGORIES)):
+        category = next_category()
+        tried.append(category)
+        question, tag_used = pick_question(category, used_ids)
+        if question:
+            tip = build_tip(category, question)
+            if tip:
+                break
+        print(f"No fresh question found for {category}, trying next category...")
 
-    # basic validation
-    required = ["category", "problem_title", "problem", "explanation"]
-    for key in required:
-        if key not in tip or not tip[key]:
-            print(f"ERROR: generated tip missing required field '{key}': {tip}", file=sys.stderr)
-            sys.exit(1)
+    if not tip:
+        raise RuntimeError(f"Could not find any fresh question across categories: {tried}")
 
-    tip["id"] = "daily"  # single working filename, overwritten each run
     save_json(CURRENT_TIP_PATH, tip)
 
-    recent_titles.append(tip["problem_title"])
-    recent_titles = recent_titles[-MAX_RECENT_TITLES:]
-    save_json(RECENT_PATH, recent_titles)
+    used_ids.append(question["question_id"])
+    used_ids = used_ids[-MAX_USED_IDS:]
+    save_json(USED_IDS_PATH, used_ids)
 
-    print(f"Generated [{tip['category']}] {tip['problem_title']}")
+    print(f"Selected [{tip['category']}] {tip['problem_title']}")
+    print(f"Source: {tip['source_url']}")
 
 
 if __name__ == "__main__":

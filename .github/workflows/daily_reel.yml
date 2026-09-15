@@ -1,7 +1,7 @@
 name: Salesforce Reel (manual)
 
 # Carousel is the default daily format (see daily_post.yml).
-# This Reel workflow is kept for manual use only — trigger it from the
+# This Reel workflow is kept for manual use only -- trigger it from the
 # Actions tab when you want to post a specific tip as a Reel instead.
 on:
   workflow_dispatch: {}
@@ -30,7 +30,6 @@ jobs:
       - name: Generate tip, cards, and reel
         working-directory: scripts
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BUILD_REEL: "1"
         run: python daily_post.py
 
@@ -38,7 +37,7 @@ jobs:
         run: |
           git config user.name "sf-tips-bot"
           git config user.email "sf-tips-bot@users.noreply.github.com"
-          git add output/reel.mp4 output/*.png data/current_tip.json data/recent_titles.json data/category_state.json data/run_meta.json
+          git add output/reel.mp4 output/*.png data/current_tip.json data/used_question_ids.json data/category_state.json data/run_meta.json
           git commit -m "Auto: daily Salesforce reel $(date -u +%Y-%m-%d)" || echo "Nothing to commit"
           git push
 
