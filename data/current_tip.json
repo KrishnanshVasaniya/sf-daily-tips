@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "Communication from embedded Custom LWC to parent FlexCard",
-  "problem": "We have a requirement in which we embed a custom LWC into a Vlocity FlexCard. We can communicate from Parent FlexCard to embedded child custom LWC. But couldn't figure out how to communicate back from embedded child custom LWC to the parent FlexCard. Is there any reference for this , something similar to sending a custom event from a child LWC to parent LWC",
-  "code": null,
-  "fixed_code": "import { LightningElement} from 'lwc';\nimport pubsub from 'vlocity_ins/pubsub';//importing pubsub component\n\nexport default class ChildLWC extends LightningElement{\n    //Variable to store our message\n    text;\n\n    connectedCallback() {\n        //Initializing message in connected callback\n        this.text = '';\n...",
-  "explanation": "The Pubsub Component enables data sharing between components. You need to import pubsub component in your LWC from the Vlocity namespace. The namespace will vary based on your package. Following is the syntax for the fire method : pubsub.fire(“Channel_Name”, “Event_Name”, payload); In order to subscribe to the events published by components, your Flexcard will need an event listener. In Design View, click on Setup...",
-  "source_url": "https://salesforce.stackexchange.com/questions/383820/communication-from-embedded-custom-lwc-to-parent-flexcard"
+  "category": "LWC",
+  "problem_title": "Force refresh view in LWC",
+  "problem": "In Aura, we can do to cause standard components to update. How can we do an equivalent in LWC because sfdx refuses to publish .js code with $A in it saying the usage is disallowed in LWC? For now i tricked it with but that is obviously less than ideal....",
+  "code": "    $A.get('e.force:refreshView').fire();",
+  "fixed_code": "import { LightningElement, api, track, wire } from 'lwc';\nimport { updateRecord } from 'lightning/uiRecordApi';\nimport updateAccount from '@salesforce/apex/ApexControllerClass.updateAccount;\n\nexport default class lightning-web-component-example extends LightningElement {\n\n     @api recordId;\n\n     handleClick(){\n\n...",
+  "explanation": "I was able to find an answer on the Developer Docs forum for a work-around. I was surprised how challenging it was to find a solution in the Salesforce LWC docs, so I'm not sure if this is the recommended approach, but it's the best I've been able to find! You will need to import the updateRecord method from the lightning/uiRecordApi . Then, you can call this updateRecord() function in your lwc javascript file...",
+  "source_url": "https://salesforce.stackexchange.com/questions/251299/force-refresh-view-in-lwc"
 }
