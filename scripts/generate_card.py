@@ -156,6 +156,22 @@ def wrap(draw, text, fnt, max_w):
             continue
         words, cur = para.split(" "), ""
         for w in words:
+            # Hard-break a single "word" that alone exceeds max_w (e.g. a long
+            # URL/path with no spaces) -- without this it just overflows the
+            # image edge instead of wrapping.
+            if draw.textlength(w, font=fnt) > max_w:
+                if cur:
+                    out.append(cur)
+                    cur = ""
+                piece = ""
+                for ch in w:
+                    if piece and draw.textlength(piece + ch, font=fnt) > max_w:
+                        out.append(piece)
+                        piece = ch
+                    else:
+                        piece += ch
+                cur = piece
+                continue
             t = (cur + " " + w).strip()
             if draw.textlength(t, font=fnt) <= max_w or not cur:
                 cur = t
@@ -166,8 +182,17 @@ def wrap(draw, text, fnt, max_w):
     return out
 
 
-def draw_wrap(draw, text, fnt, x, y, max_w, fill, lh):
-    for ln in wrap(draw, text, fnt, max_w):
+def draw_wrap(draw, text, fnt, x, y, max_w, fill, lh, max_lines=None):
+    """Draw wrapped text. If max_lines is given, truncate with an ellipsis
+    instead of letting content grow past its allotted space."""
+    lines = wrap(draw, text, fnt, max_w)
+    if max_lines and len(lines) > max_lines:
+        lines = lines[:max_lines]
+        last = lines[-1]
+        while last and draw.textlength(last + "...", font=fnt) > max_w:
+            last = last[:-1]
+        lines[-1] = last.rstrip() + "..."
+    for ln in lines:
         draw.text((x, y), ln, font=fnt, fill=fill)
         y += lh
     return y
@@ -192,9 +217,17 @@ def tokenize(line):
     return toks
 
 
-def code_block(img, draw, code, x, y, w, fsize=25, lh=37):
+def code_block(img, draw, code, x, y, w, fsize=25, lh=37, max_lines=None):
+    """Render a code block. If max_lines is given and the code is longer,
+    it's truncated with a '...' line so the block's height stays predictable
+    and never overflows whatever space the caller has budgeted for it."""
     lines = code.split("\n")
-    h = lh * len(lines) + 76
+    truncated = False
+    if max_lines is not None and len(lines) > max_lines:
+        lines = lines[:max_lines]
+        truncated = True
+
+    h = lh * (len(lines) + (1 if truncated else 0)) + 76
     # soft shadow beneath the editor for a raised look
     soft_shadow(img, [x, y, x + w, y + h], radius=18, blur=20, alpha=60, dy=10)
     draw = ImageDraw.Draw(img)
@@ -207,11 +240,21 @@ def code_block(img, draw, code, x, y, w, fsize=25, lh=37):
     cy = y + 70
     for ln in lines:
         cx = x + 36
+        # guard individual long code lines the same way (rare, but a very
+        # long single line of code could otherwise bleed past the block)
+        max_line_w = w - 72
+        if draw.textlength(ln, font=fnt) > max_line_w:
+            while ln and draw.textlength(ln + "...", font=fnt) > max_line_w:
+                ln = ln[:-1]
+            ln = ln + "..."
         for text, color in tokenize(ln):
             if text == "":
                 continue
             draw.text((cx, cy), text, font=fnt, fill=color)
             cx += draw.textlength(text, font=fnt)
+        cy += lh
+    if truncated:
+        draw.text((x + 36, cy), "...", font=fnt, fill=C_COMMENT)
         cy += lh
     return y + h
 
@@ -265,6 +308,9 @@ def footer(draw):
 CARD_TOP = 176
 CARD_BOTTOM = HEIGHT - 96
 CARD_PAD = 44
+FOOTER_RESERVE = 70   # vertical space always kept clear for the footer text
+MIN_CODE_LINES = 3    # below this, a code block isn't worth showing -- skip it
+CODE_LINE_H = 37
 
 
 def page_base(category, page_idx):
@@ -298,11 +344,22 @@ def slide_problem(tip):
     y = big_header(d, "The Problem", x, y, color=(210, 70, 66))
     y += 10
 
-    y = draw_wrap(d, tip["problem_title"], font(HL["b"], 46), x, y, inner_w, INK, 58) + 14
-    y = draw_wrap(d, tip["problem"], font(F_INTER_R, 30), x, y, inner_w, INK_SOFT, 44) + 24
+    # Cap the title and problem text to a bounded number of lines so they
+    # can NEVER grow unpredictably tall -- this is what was letting the code
+    # block get pushed past the bottom of the card on longer questions.
+    y = draw_wrap(d, tip["problem_title"], font(HL["b"], 46), x, y, inner_w, INK, 58, max_lines=3) + 14
+    y = draw_wrap(d, tip["problem"], font(F_INTER_R, 30), x, y, inner_w, INK_SOFT, 44, max_lines=6) + 24
 
     if tip.get("code"):
-        code_block(img, d, tip["code"], x, y, inner_w)
+        # Only show the code block if there's real room left for it, and
+        # size it (line count) to whatever space actually remains -- this
+        # guarantees the block always ends before the footer, never past it.
+        available = (CARD_BOTTOM - FOOTER_RESERVE) - y
+        max_lines = int((available - 76) // CODE_LINE_H)
+        if max_lines >= MIN_CODE_LINES:
+            code_block(img, d, tip["code"], x, y, inner_w, max_lines=max_lines)
+        # else: no safe room for a legible code block -- skip it rather
+        # than let it overflow. The problem text alone still stands fine.
 
     footer(d)
     return img
@@ -321,10 +378,23 @@ def slide_solution(tip):
     y += 10
 
     code = tip.get("fixed_code") or tip.get("code")
+    explanation_lh = 46
     if code:
-        y = code_block(img, d, code, x, y, inner_w) + 30
+        # Reserve room for at least a few lines of explanation after the
+        # code block, then size the code block to whatever's left over.
+        reserved_for_explanation = 4 * explanation_lh + 20
+        available = (CARD_BOTTOM - FOOTER_RESERVE) - y - reserved_for_explanation
+        max_lines = int((available - 76) // CODE_LINE_H)
+        if max_lines >= MIN_CODE_LINES:
+            y = code_block(img, d, code, x, y, inner_w, max_lines=max_lines) + 30
+        # else: skip the code block, give the explanation the full space below
 
-    draw_wrap(d, tip["explanation"], font(F_INTER_R, 31), x, y, inner_w, INK, 46)
+    # Cap the explanation to whatever vertical room remains before the
+    # footer -- guarantees this text can never run past the card either.
+    remaining = (CARD_BOTTOM - FOOTER_RESERVE) - y
+    max_explanation_lines = max(2, int(remaining // explanation_lh))
+    draw_wrap(d, tip["explanation"], font(F_INTER_R, 31), x, y, inner_w, INK,
+             explanation_lh, max_lines=max_explanation_lines)
 
     footer(d)
     return img
