@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Uncaught TypeError: 'set' on proxy: trap returned falsish for property Name",
-  "problem": "Am not doing anything fancy, just trying to update a field on Contact in JS of LWC but getting this exception. Uncaught TypeError: 'set' on proxy: trap returned falsish for property 'Name' throws at mydomain/auraFW/javascript/mhontaYdOya4Y_lBu7v9yg/aura_prod.js:2:27687 HTML Code: JS: Apex: On top of my head, am not doing anything wrong, anyone has idea what's wrong with my code? When I print...",
-  "code": "<template>\n\n    <template if:true={wiredContact}>\n\n        {wiredContact.Name}\n\n        <lightning-input value={wiredContact.Name} onchange={updateName}></lightning-input>\n    </template>\n\n</template>",
-  "fixed_code": "this.wiredContact = Object.assign({}, data);",
-  "explanation": "Cached items are set as read-only (because otherwise you could corrupt the cache). If you want a modifiable object, you need to clone it. Based on comments, you can also use the rest parameter syntax in LWC: If you don't care about some mobile browsers, and you're using Lightning Web Security instead of Locker Service , you can also use the structuredClone function, which can handle even recursive structures and...",
-  "source_url": "https://salesforce.stackexchange.com/questions/256761/uncaught-typeerror-set-on-proxy-trap-returned-falsish-for-property-name"
+  "category": "Apex",
+  "problem_title": "Any reason to skip DML on empty lists?",
+  "problem": "In parts of my code I have DML statements with an if around to only do the DML if the list is not empty: Couldn't I just write? Or would I provoke errors or needlessly consumed limits by doing that?",
+  "code": "if( !recordsToUpdate.isEmpty() ) {\n   update recordsToUpdate;\n}",
+  "fixed_code": "System.debug('Before DmlStatements : ' + Limits.getLimitDmlStatements());\nSystem.debug('Before DmlRows : ' + Limits.getDmlRows());\ninsert new List<Account>();\nSystem.debug('After DmlStatements : ' + Limits.getLimitDmlStatements());\nSystem.debug('After DmlRows : ' + Limits.getDmlRows());",
+  "explanation": "Good question, I've never considered it before... i've just assumed the platform will play fair and I'm pleased to find it does! Results in a successful completion and confirmation of no governor usage. 09:00:14.185 (5185191000)|USER_DEBUG|[1]|DEBUG|Before DmlStatements : 150 09:00:14.185 (5185303000)|USER_DEBUG|[2]|DEBUG|Before DmlRows : 0 09:00:14.185 (5185553000)|SYSTEM_CONSTRUCTOR_ENTRY|[3]|() 09:00:14.185...",
+  "source_url": "https://salesforce.stackexchange.com/questions/19399/any-reason-to-skip-dml-on-empty-lists"
 }
