@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "Unable to Signup omnistudio enabled developer org",
-  "problem": "I'm trying to signup a OmniStudio Developer org through below url : https://trailhead.salesforce.com/promo/orgs/omnistudiotrails But above url is not working. Please see below screenshot -",
-  "code": null,
-  "fixed_code": null,
-  "explanation": "You can get a Financial Services Cloud trail org that has Omnistudio enabled here . I have used it a few times to test Omnistudio related solutions. I am not sure if it will be suitable for your Trailhead badge that you are doing, but you can always connect it with your Trailhead account and see if you will be able to complete the trails. Good luck!",
-  "source_url": "https://salesforce.stackexchange.com/questions/422237/unable-to-signup-omnistudio-enabled-developer-org"
+  "category": "LWC",
+  "problem_title": "Uncaught TypeError: 'set' on proxy: trap returned falsish for property Name",
+  "problem": "Am not doing anything fancy, just trying to update a field on Contact in JS of LWC but getting this exception. Uncaught TypeError: 'set' on proxy: trap returned falsish for property 'Name' throws at mydomain/auraFW/javascript/mhontaYdOya4Y_lBu7v9yg/aura_prod.js:2:27687 HTML Code: JS: Apex: On top of my head, am not doing anything wrong, anyone has idea what's wrong with my code? When I print...",
+  "code": "<template>\n\n    <template if:true={wiredContact}>\n\n        {wiredContact.Name}\n\n        <lightning-input value={wiredContact.Name} onchange={updateName}></lightning-input>\n    </template>\n\n</template>",
+  "fixed_code": "this.wiredContact = Object.assign({}, data);",
+  "explanation": "Cached items are set as read-only (because otherwise you could corrupt the cache). If you want a modifiable object, you need to clone it. Based on comments, you can also use the rest parameter syntax in LWC: If you don't care about some mobile browsers, and you're using Lightning Web Security instead of Locker Service , you can also use the structuredClone function, which can handle even recursive structures and...",
+  "source_url": "https://salesforce.stackexchange.com/questions/256761/uncaught-typeerror-set-on-proxy-trap-returned-falsish-for-property-name"
 }
