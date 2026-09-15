@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "Is it possible to run a SOQL Query and get a Map returned?",
-  "problem": "It is possible to run query and the results inserted into an Apex list: Is it possible to return a Map? Where the key would be the OpportunityID and the value the Opportunity? If not, what is the quickest way to convert to a map?",
-  "code": "List<Opportunity> opportunities = [SELECT Opportunity.OwnerId,\n                                          Opportunity.Probability,  \n                                          Owner.Name FROM Opportunity \n                                    WHERE Opportunity.LastModifiedDate = LAST_N_DAYS:7];",
-  "fixed_code": "Map<ID, Contact> m = new Map<ID, Contact>([SELECT Id, LastName FROM Contact]);",
-  "explanation": "I know only one: Here is the doc: Maps of sObjects",
-  "source_url": "https://salesforce.stackexchange.com/questions/5288/is-it-possible-to-run-a-soql-query-and-get-a-map-returned"
+  "category": "OmniStudio",
+  "problem_title": "Unable to Signup omnistudio enabled developer org",
+  "problem": "I'm trying to signup a OmniStudio Developer org through below url : https://trailhead.salesforce.com/promo/orgs/omnistudiotrails But above url is not working. Please see below screenshot -",
+  "code": null,
+  "fixed_code": null,
+  "explanation": "You can get a Financial Services Cloud trail org that has Omnistudio enabled here . I have used it a few times to test Omnistudio related solutions. I am not sure if it will be suitable for your Trailhead badge that you are doing, but you can always connect it with your Trailhead account and see if you will be able to complete the trails. Good luck!",
+  "source_url": "https://salesforce.stackexchange.com/questions/422237/unable-to-signup-omnistudio-enabled-developer-org"
 }
