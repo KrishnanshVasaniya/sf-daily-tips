@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Generates ONE tip per run by pulling a real, highly-voted, answered question
-from Salesforce Stack Exchange (site: salesforce.stackexchange.com) via their
-free public API. No account, no API key, no cost -- and it never runs out,
-since the community keeps posting new questions.
+Generates ONE tip per run by pulling a real, well-vetted question from
+Salesforce Stack Exchange (free public API, no key, no cost, never runs out).
 
-Content is CC BY-SA licensed: reused with attribution, which daily_post.py
-adds to the caption automatically (source_url is carried through).
+Quality bar (tightened after the first live run surfaced a non-technical
+"how do I sign up" question with no code involved):
+  - must have an ACCEPTED answer (not just "some answer exists")
+  - question score >= 2 (filters out unvetted/low-quality posts)
+  - either the question or its accepted answer must contain an actual code
+    block -- this is what filters out administrative/access/signup issues
+    that aren't real "Problem -> Solution" coding tips
 
-Rotates categories same as before: Apex -> SOQL -> OmniStudio -> LWC -> Flow.
-Tracks used question IDs so the same question is never reposted.
+Rotates categories: Apex -> SOQL -> OmniStudio -> LWC -> Flow.
+Tracks used question IDs so nothing repeats.
 
 Writes: data/current_tip.json (consumed by generate_card.py)
 Updates: data/used_question_ids.json, data/category_state.json
@@ -28,13 +31,11 @@ CATEGORY_STATE_PATH = os.path.join(DATA_DIR, "category_state.json")
 CURRENT_TIP_PATH = os.path.join(DATA_DIR, "current_tip.json")
 
 CATEGORIES = ["Apex", "SOQL", "OmniStudio", "LWC", "Flow"]
-MAX_USED_IDS = 3000  # generous cap; content is effectively infinite so this
-                      # mainly just keeps the tracking file from growing forever
+MAX_USED_IDS = 3000
 
 SE_API = "https://api.stackexchange.com/2.3"
 SITE = "salesforce"
 
-# primary tag first, then fallbacks tried in order if a category comes up empty
 CATEGORY_TAGS = {
     "Apex": ["apex-code"],
     "SOQL": ["soql"],
@@ -43,8 +44,10 @@ CATEGORY_TAGS = {
     "OmniStudio": ["omnistudio", "vlocity"],
 }
 
+MIN_SCORE = 2
 MAX_TEXT_CHARS = 420
 MAX_CODE_LINES = 10
+CANDIDATES_PER_TAG = 30  # cast a wider net since the quality bar is stricter now
 
 CODE_BLOCK_RE = re.compile(r"<pre>\s*<code>(.*?)</code>\s*</pre>", re.DOTALL)
 TAG_RE = re.compile(r"<[^>]+>")
@@ -71,7 +74,6 @@ def next_category():
 
 
 def extract_first_code_block(body_html):
-    """Pull the first <pre><code> block out of Stack Exchange's HTML body."""
     m = CODE_BLOCK_RE.search(body_html or "")
     if not m:
         return None
@@ -83,7 +85,6 @@ def extract_first_code_block(body_html):
 
 
 def strip_html_to_text(body_html, max_chars=MAX_TEXT_CHARS):
-    """Remove code blocks + tags, decode entities, collapse whitespace, truncate cleanly."""
     text = CODE_BLOCK_RE.sub(" ", body_html or "")
     text = TAG_RE.sub(" ", text)
     text = html_module.unescape(text)
@@ -93,7 +94,7 @@ def strip_html_to_text(body_html, max_chars=MAX_TEXT_CHARS):
     return text
 
 
-def fetch_candidate_questions(tag, pagesize=20):
+def fetch_candidate_questions(tag, pagesize=CANDIDATES_PER_TAG):
     resp = requests.get(
         f"{SE_API}/questions",
         params={
@@ -106,22 +107,16 @@ def fetch_candidate_questions(tag, pagesize=20):
         },
         timeout=30,
     )
-    if not resp.ok:
-        print("Anthropic API error response:", resp.text)
     resp.raise_for_status()
     return resp.json().get("items", [])
 
 
-def fetch_top_answer(question_id):
+def fetch_answer_by_id(answer_id):
+    """Fetch a specific answer by ID (used to get the ACCEPTED answer, not
+    just 'some' answer)."""
     resp = requests.get(
-        f"{SE_API}/questions/{question_id}/answers",
-        params={
-            "order": "desc",
-            "sort": "votes",
-            "site": SITE,
-            "filter": "withbody",
-            "pagesize": 5,
-        },
+        f"{SE_API}/answers/{answer_id}",
+        params={"site": SITE, "filter": "withbody"},
         timeout=30,
     )
     resp.raise_for_status()
@@ -129,7 +124,18 @@ def fetch_top_answer(question_id):
     return items[0] if items else None
 
 
-def pick_question(category, used_ids):
+def passes_quality_bar(question):
+    """First-pass filters that don't require an extra API call."""
+    if not question.get("accepted_answer_id"):
+        return False
+    if question.get("score", 0) < MIN_SCORE:
+        return False
+    return True
+
+
+def pick_tip(category, used_ids):
+    """Find a question that passes ALL quality bars, including 'has real
+    code involved' -- which requires fetching the accepted answer to check."""
     tags = CATEGORY_TAGS.get(category, [category.lower()])
     for tag in tags:
         try:
@@ -137,61 +143,65 @@ def pick_question(category, used_ids):
         except requests.RequestException as e:
             print(f"Warning: fetch failed for tag '{tag}': {e}")
             continue
+
         for q in candidates:
             if q["question_id"] in used_ids:
                 continue
-            if not q.get("is_answered"):
+            if not passes_quality_bar(q):
                 continue
-            if q.get("score", 0) < 1:
+
+            try:
+                answer = fetch_answer_by_id(q["accepted_answer_id"])
+            except requests.RequestException:
                 continue
-            return q, tag
+            if not answer:
+                continue
+
+            q_body = q.get("body", "")
+            a_body = answer.get("body", "")
+            code = extract_first_code_block(q_body)
+            fixed_code = extract_first_code_block(a_body)
+
+            # The real fix: skip anything with no actual code in it --
+            # this is what filters out signup/access/admin-type questions.
+            if not code and not fixed_code:
+                continue
+
+            tip = {
+                "id": "daily",
+                "category": category,
+                "problem_title": html_module.unescape(q["title"]),
+                "problem": strip_html_to_text(q_body),
+                "code": code,
+                "fixed_code": fixed_code,
+                "explanation": strip_html_to_text(a_body) or
+                    "See the full accepted answer on Salesforce Stack Exchange (link in caption).",
+                "source_url": q["link"],
+            }
+            return tip, q
+
     return None, None
-
-
-def build_tip(category, question):
-    answer = fetch_top_answer(question["question_id"])
-    if not answer:
-        return None
-
-    q_body = question.get("body", "")
-    a_body = answer.get("body", "")
-
-    tip = {
-        "id": "daily",
-        "category": category,
-        "problem_title": html_module.unescape(question["title"]),
-        "problem": strip_html_to_text(q_body),
-        "code": extract_first_code_block(q_body),
-        "fixed_code": extract_first_code_block(a_body),
-        "explanation": strip_html_to_text(a_body),
-        "source_url": question["link"],
-    }
-    # Guarantee explanation is never empty (fall back to problem text's tail case)
-    if not tip["explanation"]:
-        tip["explanation"] = "See the full answer on Salesforce Stack Exchange (link in caption)."
-    return tip
 
 
 def main():
     used_ids = load_json(USED_IDS_PATH, [])
 
-    # Try the rotation category first; if it's genuinely out of fresh
-    # questions, fall through to the next categories rather than fail the run.
     tried = []
     tip = None
     question = None
     for _ in range(len(CATEGORIES)):
         category = next_category()
         tried.append(category)
-        question, tag_used = pick_question(category, used_ids)
-        if question:
-            tip = build_tip(category, question)
-            if tip:
-                break
-        print(f"No fresh question found for {category}, trying next category...")
+        tip, question = pick_tip(category, used_ids)
+        if tip:
+            break
+        print(f"No quality-qualifying question found for {category}, trying next category...")
 
     if not tip:
-        raise RuntimeError(f"Could not find any fresh question across categories: {tried}")
+        raise RuntimeError(
+            f"Could not find any fresh, code-containing, accepted-answer question "
+            f"across categories: {tried}"
+        )
 
     save_json(CURRENT_TIP_PATH, tip)
 
