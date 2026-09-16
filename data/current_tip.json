@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Force refresh view in LWC",
-  "problem": "In Aura, we can do to cause standard components to update. How can we do an equivalent in LWC because sfdx refuses to publish .js code with $A in it saying the usage is disallowed in LWC? For now i tricked it with but that is obviously less than ideal....",
-  "code": "    $A.get('e.force:refreshView').fire();",
-  "fixed_code": "import { LightningElement, api, track, wire } from 'lwc';\nimport { updateRecord } from 'lightning/uiRecordApi';\nimport updateAccount from '@salesforce/apex/ApexControllerClass.updateAccount;\n\nexport default class lightning-web-component-example extends LightningElement {\n\n     @api recordId;\n\n     handleClick(){\n\n...",
-  "explanation": "I was able to find an answer on the Developer Docs forum for a work-around. I was surprised how challenging it was to find a solution in the Salesforce LWC docs, so I'm not sure if this is the recommended approach, but it's the best I've been able to find! You will need to import the updateRecord method from the lightning/uiRecordApi . Then, you can call this updateRecord() function in your lwc javascript file...",
-  "source_url": "https://salesforce.stackexchange.com/questions/251299/force-refresh-view-in-lwc"
+  "category": "Flow",
+  "problem_title": "package.xml format to retreive process builder",
+  "problem": "can anyone please help out with sample package.xml to retrieve process builder from salesforce org? Thanks in advance",
+  "code": null,
+  "fixed_code": "<Package xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <types>\n        <members>*</members>\n        <name>Flow</name>\n    </types>\n    <version>31.0</version>\n</Package>",
+  "explanation": "Processes from Process Builder have Flow metadata type. And you can retrieve all processes with next package.xml:",
+  "source_url": "https://salesforce.stackexchange.com/questions/71280/package-xml-format-to-retreive-process-builder"
 }
