@@ -272,17 +272,29 @@ def code_block(img, draw, code, x, y, w, fsize=25, lh=37, max_lines=None):
         dx = x + 32 + i * 32
         draw.ellipse([dx, y + 26, dx + 18, y + 44], fill=c)
     fnt = font(F_MONO, fsize)
+    max_line_w = w - 72
     cy = y + 70
     for ln in lines:
         cx = x + 36
-        # guard individual long code lines the same way (rare, but a very
-        # long single line of code could otherwise bleed past the block)
-        max_line_w = w - 72
-        if draw.textlength(ln, font=fnt) > max_line_w:
-            while ln and draw.textlength(ln + "...", font=fnt) > max_line_w:
-                ln = ln[:-1]
-            ln = ln + "..."
-        for text, color in tokenize(ln):
+        # IMPORTANT: tokenize() inserts a space after every single token
+        # (brackets, commas, everything), which makes the rendered line
+        # visibly WIDER than the plain string. Measuring the plain string
+        # (as an earlier version of this function did) under-counts the
+        # real width and lets long lines bleed past the block -- so here
+        # we measure and truncate using the actual token-by-token width.
+        toks = tokenize(ln)
+        total_w = sum(draw.textlength(t, font=fnt) for t, _ in toks)
+        if total_w > max_line_w:
+            ellipsis_w = draw.textlength("...", font=fnt)
+            kept, run = [], 0.0
+            for tok, color in toks:
+                tw = draw.textlength(tok, font=fnt)
+                if run + tw + ellipsis_w > max_line_w:
+                    break
+                kept.append((tok, color))
+                run += tw
+            toks = kept + [("...", C_COMMENT)]
+        for text, color in toks:
             if text == "":
                 continue
             draw.text((cx, cy), text, font=fnt, fill=color)
