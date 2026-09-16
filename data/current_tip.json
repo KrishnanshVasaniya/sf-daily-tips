@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "Is there a way to do Like against a list of Values?",
-  "problem": "Is there a way to mix LIKE operator with IN ? Something Like Where nameList is list of String? Is this is possible ? (I can make a dynamic query by doing OR with all the elements, but was looking for a more elegant way to do this)",
-  "code": "SELECT Id FROM Account WHERE Name LIKE IN:nameList",
-  "fixed_code": "String[] filters = new String[]{'acme%','ib%'};\nList<Accounts> accs = [SELECT Id, Name FROM Account WHERE Name LIKE :filters];",
-  "explanation": "No, but you can query like this which does the same thing as what you're trying to do:",
-  "source_url": "https://salesforce.stackexchange.com/questions/12522/is-there-a-way-to-do-like-against-a-list-of-values"
+  "category": "OmniStudio",
+  "problem_title": "Identify Duplicate Value in Integration Procedure",
+  "problem": "I have an integration procedure which receives an array containing several listItems, in case any of the listItems have the same productId I need to recalculate a value. Input for the IP looks like this I've tried using the ListAction, which is great for merging but doesnt seem to help me by identifying that there's a identical Id, and if so which one. How would I go about identifying that the array contains a...",
+  "code": "\"ListItems\":\n        [\n            {\"ProductId\": \"01t9O000DgvQAG\", \"OtherField\": \"Value1\"},\n            {\"ProductId\": \"01t9O000DgvQAG\", \"OtherField\": \"Value2\"},\n            {\"ProductId\": \"01t9O000DgkQAH\", \"OtherField\": \"Value3\"}\n        ]",
+  "fixed_code": null,
+  "explanation": "I managed to get a solution using a combination of a Data Mapper Transform wrapped in an Integration Procedure. The Data Mapper Transform does all the logic, as I have found its formula capabilities are much easier to work with than anything else. The Data Mapper Transform: Receives the original list together with a ProductId which will be our SearchKey , Uses FILTER(LIST(%ListItems%), 'ProductId == \"' + SearchKey +...",
+  "source_url": "https://salesforce.stackexchange.com/questions/425660/identify-duplicate-value-in-integration-procedure"
 }
