@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Expression Functions for Lightning Web Components",
-  "problem": "How can expression functions similar to Visualforce and Lightning Aura Components be achieved within lightning web components? For example, <template if:true={index % 5 == 0}><br></template> expression index % 5 == 0 is not compyling at all. accountList.html <template> <template if:true={accounts.data}> <template for:each={accounts.data} for:item='item' for:index='index'> <!--LWC DOES NOT SUPPORT EXPRESSION...",
+  "category": "Flow",
+  "problem_title": "How do I determine if the case owner is a user or queue in process builder?",
+  "problem": "I'm using the process builder to create a task and assign it to the case owner. If the case owner is a queue then creating the task fails with the following error: FIELD_INTEGRITY_EXCEPTION: Assigned To ID: id value of incorrect type While this scenario will likely never happen I'd like to address the possibility by determining if the owner is a user or queue and only attempt to create the task if owned by a user....",
   "code": null,
-  "fixed_code": "import {LightningElement, api} from 'lwc';\n\nexport default class AccountListItem extends LightningElement {\n   @api index;\n   @api item;\n\n   get isMod5() {\n     return this.index % 5 == 0;\n   }\n}",
-  "explanation": "There are multiple options. First, note, that all computations are in JavaScript, not in the markup. Option 1 You implement the display of your {item} (which is currently only the JSON object), into a dedicated component AccountListItem . And implement in there the logic that @POZ suggested. Something along the lines of: Option 2 You use a wired function instead of a wired property. And then do some fun stuff with a...",
-  "source_url": "https://salesforce.stackexchange.com/questions/244460/expression-functions-for-lightning-web-components"
+  "fixed_code": "BEGINS([Case].OwnerId, \"005\") ",
+  "explanation": "Just check the first three digits of the OwnerId field (the key prefix for the Id). You can use a formula criterion here. Is owned by User: Is owned by Queue:",
+  "source_url": "https://salesforce.stackexchange.com/questions/193594/how-do-i-determine-if-the-case-owner-is-a-user-or-queue-in-process-builder"
 }
