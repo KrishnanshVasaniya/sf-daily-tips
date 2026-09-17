@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "How do I determine if the case owner is a user or queue in process builder?",
-  "problem": "I'm using the process builder to create a task and assign it to the case owner. If the case owner is a queue then creating the task fails with the following error: FIELD_INTEGRITY_EXCEPTION: Assigned To ID: id value of incorrect type While this scenario will likely never happen I'd like to address the possibility by determining if the owner is a user or queue and only attempt to create the task if owned by a user....",
+  "category": "Apex",
+  "problem_title": "How can I efficiently generate a Set<Id> from a List<SObject> structure?",
+  "problem": "I have a bit of code where I've written a SOQL query that returns a list of SObject records, however I need a Set<Id> structure to pass to another method that I don't have control of (and thus can't change the method signature of). How can I turn my returned List<SObject> into a Set<Id> ? Is the best option just a for loop?",
   "code": null,
-  "fixed_code": "BEGINS([Case].OwnerId, \"005\") ",
-  "explanation": "Just check the first three digits of the OwnerId field (the key prefix for the Id). You can use a formula criterion here. Is owned by User: Is owned by Queue:",
-  "source_url": "https://salesforce.stackexchange.com/questions/193594/how-do-i-determine-if-the-case-owner-is-a-user-or-queue-in-process-builder"
+  "fixed_code": "List<SObject> results = Database.query(someSOQL);\nSet<Id> resultIds = (new Map<Id,SObject>(results)).keySet();",
+  "explanation": "This trick only works on the Id field, but you can use the Map constructor that accepts an SObject list to do this without consuming a script statement for each element in the List. For example: What this second line does is create a new Map<Id,SObject> from the results list using a special constructor , and then take the map's set of keys via the keySet() method. Then the map falls out of scope and it's heap space...",
+  "source_url": "https://salesforce.stackexchange.com/questions/8910/how-can-i-efficiently-generate-a-setid-from-a-listsobject-structure"
 }
