@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "Identify Duplicate Value in Integration Procedure",
-  "problem": "I have an integration procedure which receives an array containing several listItems, in case any of the listItems have the same productId I need to recalculate a value. Input for the IP looks like this I've tried using the ListAction, which is great for merging but doesnt seem to help me by identifying that there's a identical Id, and if so which one. How would I go about identifying that the array contains a...",
-  "code": "\"ListItems\":\n        [\n            {\"ProductId\": \"01t9O000DgvQAG\", \"OtherField\": \"Value1\"},\n            {\"ProductId\": \"01t9O000DgvQAG\", \"OtherField\": \"Value2\"},\n            {\"ProductId\": \"01t9O000DgkQAH\", \"OtherField\": \"Value3\"}\n        ]",
-  "fixed_code": null,
-  "explanation": "I managed to get a solution using a combination of a Data Mapper Transform wrapped in an Integration Procedure. The Data Mapper Transform does all the logic, as I have found its formula capabilities are much easier to work with than anything else. The Data Mapper Transform: Receives the original list together with a ProductId which will be our SearchKey , Uses FILTER(LIST(%ListItems%), 'ProductId == \"' + SearchKey +...",
-  "source_url": "https://salesforce.stackexchange.com/questions/425660/identify-duplicate-value-in-integration-procedure"
+  "category": "LWC",
+  "problem_title": "Expression Functions for Lightning Web Components",
+  "problem": "How can expression functions similar to Visualforce and Lightning Aura Components be achieved within lightning web components? For example, <template if:true={index % 5 == 0}><br></template> expression index % 5 == 0 is not compyling at all. accountList.html <template> <template if:true={accounts.data}> <template for:each={accounts.data} for:item='item' for:index='index'> <!--LWC DOES NOT SUPPORT EXPRESSION...",
+  "code": null,
+  "fixed_code": "import {LightningElement, api} from 'lwc';\n\nexport default class AccountListItem extends LightningElement {\n   @api index;\n   @api item;\n\n   get isMod5() {\n     return this.index % 5 == 0;\n   }\n}",
+  "explanation": "There are multiple options. First, note, that all computations are in JavaScript, not in the markup. Option 1 You implement the display of your {item} (which is currently only the JSON object), into a dedicated component AccountListItem . And implement in there the logic that @POZ suggested. Something along the lines of: Option 2 You use a wired function instead of a wired property. And then do some fun stuff with a...",
+  "source_url": "https://salesforce.stackexchange.com/questions/244460/expression-functions-for-lightning-web-components"
 }
