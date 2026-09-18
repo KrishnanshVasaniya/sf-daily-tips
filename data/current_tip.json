@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "SOQL Record Locking : For Update",
-  "problem": "Well I was trying to Implement Record Locking apex but Salesforce Document doesn't seem to help much. Even tried searching stackexchange there was a old question but the answer form StackExchange and details from document seems to be conflicting. Salesforce Document Link : http://www.salesforce.com/us/developer/docs/apexcode/Content/langCon_apex_locking_statements.htm StackExchange Question Link : SOQL Record...",
-  "code": "public static void updateMyAccount(){\nAccount acc = [SELECT Id FROM Account WHERE isValid = TRUE AND Id='SOME ID' FOR UPDATE];\n//some time consuming process...callouts etc here\n acc.isValid__c = false;\n update acc;",
-  "fixed_code": "public with sharing class rowlock {\n    Id accountId = [SELECT Id, name FROM Account where name = 'test' LIMIT 1].Id;\n\n    public void updateAccount() {\n        Account[] a = [SELECT Id FROM Account WHERE Id = :accountId and name = 'test' FOR UPDATE];\n        for(integer i = 0; i < 3000000; i++) {\n            // Do nothing, haha!\n        }\n        if(!a.isempty()) {\n            a[0].name = 'test2';\n...",
-  "explanation": "Q1: I am bit confused about what will happen ? Will it fail(throw exception) or will it wait for 4-5 seconds and then if it doesn't get access it will throw an exception? You will get somewhere around ten seconds before it will exclusively fail. The user will be advised to try their save again. The status code will be \"UNABLE_TO_LOCK_ROW\". Q2 : In the above case will the second thread get access to the record ? or...",
-  "source_url": "https://salesforce.stackexchange.com/questions/22636/soql-record-locking-for-update"
+  "category": "OmniStudio",
+  "problem_title": "Sum up items in a Flex Card",
+  "problem": "I am quite newb when it comes to Omnistudio, just getting the grips of it. I have two flex cards, parent and child. The parent is just a collapsible toggle, and shows/hides child card. Child card is a bunch of quote line items and their prices. Ideally I'd like to show a total for all the items fetched in the quote line items. I cannot think of a solution here other than have another child flex card which takes the...",
+  "code": null,
+  "fixed_code": "SUM(QuoteLiteItem:TotalPrice)",
+  "explanation": "For data extraction and transformation requirements other than just retrieving data, I would opt to wrap everything in an Integration Procedure and tailor the response to properly display the information in the flexcard. The JSON that the Flexcard needs to receive should be something like: { \"QuoteLineItem\": [ { \"ProductName\": \"QuoteLine 1\", \"TotalPrice\": 7 }, { \"ProductName\": \"QuoteLine 2\", \"TotalPrice\": 5 }, {...",
+  "source_url": "https://salesforce.stackexchange.com/questions/420111/sum-up-items-in-a-flex-card"
 }
