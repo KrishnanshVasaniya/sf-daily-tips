@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "Sum up items in a Flex Card",
-  "problem": "I am quite newb when it comes to Omnistudio, just getting the grips of it. I have two flex cards, parent and child. The parent is just a collapsible toggle, and shows/hides child card. Child card is a bunch of quote line items and their prices. Ideally I'd like to show a total for all the items fetched in the quote line items. I cannot think of a solution here other than have another child flex card which takes the...",
+  "category": "LWC",
+  "problem_title": "How to turn boxcarring OFF for LWC imperative apex method calls?",
+  "problem": "We are running in a blocking performance issue on a page that we built using Lightning Web Components. Our page has many LWC components, each calling various apex methods via an imperative method call. The apex methods in turn make callouts to a third-party API. We found that the page had terrible performance taking 30+ seconds to load even though each of the third-party API calls would only take 1-2 seconds each....",
   "code": null,
-  "fixed_code": "SUM(QuoteLiteItem:TotalPrice)",
-  "explanation": "For data extraction and transformation requirements other than just retrieving data, I would opt to wrap everything in an Integration Procedure and tailor the response to properly display the information in the flexcard. The JSON that the Flexcard needs to receive should be something like: { \"QuoteLineItem\": [ { \"ProductName\": \"QuoteLine 1\", \"TotalPrice\": 7 }, { \"ProductName\": \"QuoteLine 2\", \"TotalPrice\": 5 }, {...",
-  "source_url": "https://salesforce.stackexchange.com/questions/420111/sum-up-items-in-a-flex-card"
+  "fixed_code": "Here's the console log when each of the 4 callouts was set to a 1 second delay:\nCall 1 Elapsed =1360 \nCall 2 Elapsed =1379 \nCall 3 Elapsed =2515 \nCall 4 Elapsed =2515 \nTotal Elapsed =2515\n\nHere's the console when with the longest calls starting first:\nCall 2 Elapsed =3361 (3 second call)\nCall 3 Elapsed =3527 (2 second call)\n...",
+  "explanation": "First--very well constructed question, and good investigation. I was not aware of this issue with boxcarring in LWC. I'm going to focus on a workaround rather than an actual setting, since I'm sure you've searched for that already. What happens if you put your apex invocations inside setTimeout calls? I know it's needlessly adding time, but you could add small delays like 50 msec or possibly even 0 mSec just to...",
+  "source_url": "https://salesforce.stackexchange.com/questions/263382/how-to-turn-boxcarring-off-for-lwc-imperative-apex-method-calls"
 }
