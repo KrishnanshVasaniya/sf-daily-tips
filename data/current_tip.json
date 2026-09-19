@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "How to turn boxcarring OFF for LWC imperative apex method calls?",
-  "problem": "We are running in a blocking performance issue on a page that we built using Lightning Web Components. Our page has many LWC components, each calling various apex methods via an imperative method call. The apex methods in turn make callouts to a third-party API. We found that the page had terrible performance taking 30+ seconds to load even though each of the third-party API calls would only take 1-2 seconds each....",
-  "code": null,
-  "fixed_code": "Here's the console log when each of the 4 callouts was set to a 1 second delay:\nCall 1 Elapsed =1360 \nCall 2 Elapsed =1379 \nCall 3 Elapsed =2515 \nCall 4 Elapsed =2515 \nTotal Elapsed =2515\n\nHere's the console when with the longest calls starting first:\nCall 2 Elapsed =3361 (3 second call)\nCall 3 Elapsed =3527 (2 second call)\n...",
-  "explanation": "First--very well constructed question, and good investigation. I was not aware of this issue with boxcarring in LWC. I'm going to focus on a workaround rather than an actual setting, since I'm sure you've searched for that already. What happens if you put your apex invocations inside setTimeout calls? I know it's needlessly adding time, but you could add small delays like 50 msec or possibly even 0 mSec just to...",
-  "source_url": "https://salesforce.stackexchange.com/questions/263382/how-to-turn-boxcarring-off-for-lwc-imperative-apex-method-calls"
+  "category": "Flow",
+  "problem_title": "Problem with Process Builder Invocable Method and Webservice Call out",
+  "problem": "I am trying to execute a web service call to our backend system when the opportunity is closed/won. I am attempting to do a POST to our endpoint. All the api call is really carrying the account name and a few structural detail back (All listed below). My problem is that when the trigger executes I get the following error in the debug logs \"System.CalloutException: You have uncommitted work pending. Please commit or...",
+  "code": "public class Play2 {\n@TestVisible static HttpResponse res;\n\n@InvocableMethod\npublic static void sendNotification(List<String> name) {\n\n\n\n    HttpRequest req = new HttpRequest();\n    Http http = new Http();\n...",
+  "fixed_code": null,
+  "explanation": "Apex can be annoying like that: limitations in termos of callouts and DML. What we've done to work around that is to make callout in the future method. Your invocable would call the future and pass the map. The future would construct the request and send it out. Your future should be annotated with @future(callout=true) to be able to make callouts.",
+  "source_url": "https://salesforce.stackexchange.com/questions/120012/problem-with-process-builder-invocable-method-and-webservice-call-out"
 }
