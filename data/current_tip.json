@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "How to display parent fields in FlexCard Datatable?",
-  "problem": "I am trying to display a simple data table with Opportunity fields as well as parent fields, however, it seems that there is no (intuitive) way for me to display the parent fields, such as Account. My query: My datatable JSON: ] So I don't know if it's possible to amend the JSON to display this, but in the declarative DataTable box I cannot see the parent field, i.e. FirstName (yep, person accounts are on) When I...",
-  "code": "select StageName, Account.FirstName from Opportunity limit 3",
-  "fixed_code": "[\n    {\n        \"attributes\": {\n            \"type\": \"Opportunity\",\n            \"url\": \"/services/data/v60.0/sobjects/Opportunity/0062Z00000WdlzbQAB\"\n        },\n        \"Id\": \"0067Z00020WdlzbQAB\",\n        \"AccountId\": \"00172000026uBNjQAM\",\n        \"Account\": {\n            \"attributes\": {\n...",
-  "explanation": "The query you're using will return you an array of Opportunity objects, and each Opportunity object will contain a nested Account object. This is why the output shows [object Object]. Example of the JSON returned using the query: Solution: Create an integration procedure: Make the IP call a dataraptor extract: Use response action to fetch the data back to the calling component (in our case a Flexcard): And lastly...",
-  "source_url": "https://salesforce.stackexchange.com/questions/419683/how-to-display-parent-fields-in-flexcard-datatable"
+  "category": "LWC",
+  "problem_title": "What are Lightning Web Components",
+  "problem": "Salesforce has just announced a new feature, Lightning Web Components. What is this? What does it have to do with Lightning Components and the Lightning Component Framework?",
+  "code": null,
+  "fixed_code": "<template>\n\n    <lightning-card title=\"RecordEditFormDynamicContact\" icon-name=\"standard:contact\">\n\n        <div class=\"slds-m-around_medium\">\n\n            <lightning-record-edit-form\n                object-api-name=\"objectApiName\"\n                record-id=\"recordId\">\n                <lightning-messages></lightning-messages>\n...",
+  "explanation": "Lightning web components (LWC) are a new programming model for the Lightning Component Framework that is slated to be released in the Spring 19 release. This programming model was architected with three principles in mind. Align with modern web standards Interoperability with the original Aura-based Lightning component development model Performance Standards LWC is compliant with most ES2015 (aka ES6) and later...",
+  "source_url": "https://salesforce.stackexchange.com/questions/242469/what-are-lightning-web-components"
 }
