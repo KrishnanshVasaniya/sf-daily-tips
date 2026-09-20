@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "What are Lightning Web Components",
-  "problem": "Salesforce has just announced a new feature, Lightning Web Components. What is this? What does it have to do with Lightning Components and the Lightning Component Framework?",
-  "code": null,
-  "fixed_code": "<template>\n\n    <lightning-card title=\"RecordEditFormDynamicContact\" icon-name=\"standard:contact\">\n\n        <div class=\"slds-m-around_medium\">\n\n            <lightning-record-edit-form\n                object-api-name=\"objectApiName\"\n                record-id=\"recordId\">\n                <lightning-messages></lightning-messages>\n...",
-  "explanation": "Lightning web components (LWC) are a new programming model for the Lightning Component Framework that is slated to be released in the Spring 19 release. This programming model was architected with three principles in mind. Align with modern web standards Interoperability with the original Aura-based Lightning component development model Performance Standards LWC is compliant with most ES2015 (aka ES6) and later...",
-  "source_url": "https://salesforce.stackexchange.com/questions/242469/what-are-lightning-web-components"
+  "category": "Flow",
+  "problem_title": "Can't invoke @InvocableMethod via the REST API",
+  "problem": "I've been trying to use the new Spring '15 functionality related to Invocable Actions / @InvocableMethod / @InvocableVariable using the current documentation: https://www.salesforce.com/us/developer/docs/api_rest/ http://releasenotes.docs.salesforce.com/spring15/spring15/release-notes/rn_forcecom_flow_apex.htm...",
+  "code": "https://yourInstance.salesforce.com/services/data/v33.0/actions/custom/apex/InvocableClass",
+  "fixed_code": "public class InvocableClass {\n    @InvocableMethod\n    public static List<Account> InsertAccount(List <String> names) {\n\n       List<Account> myAccounts = new List<Account>();\n       for (String  accName: names)\n       {\n         Account acc = new Account(Name = accName);\n         myAccounts.add(acc) ;\n       }\n...",
+  "explanation": "... and here it is the way to do it: To be able to execute the @InvocableMethod that is in the class, this method needs to have the one permitted parameter. If the method is defined without the parameter then this is not executed, since the REST API doesn't have enough information to know what needs to be executed / invoked. Therefore this is the way to implement the @InvocableMethod and the corresponding call:...",
+  "source_url": "https://salesforce.stackexchange.com/questions/64116/cant-invoke-invocablemethod-via-the-rest-api"
 }
