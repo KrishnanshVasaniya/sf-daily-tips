@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "Workaround for Offset 2000 limit on SOQL Query",
-  "problem": "Problem I'm trying to make a standard query pagination. I'm using SOAP API . The logic is classic: LIMIT recordsByPage OFFSET (recordsByPage*pageNumber)+1 , It works fine, however, I'm facing the 2000 limit of OFFSET: The maximum offset is 2,000 rows. Requesting an offset greater than 2,000 will result in a NUMBER_OUTSIDE_VALID_RANGE error. I advice of SF to solve this limit is to create a QueryLocator and use the...",
-  "code": null,
-  "fixed_code": "SELECT Id, Name, CreatedDate FROM Account ORDER BY CreatedDate LIMIT 2000",
-  "explanation": "QueryMore is the appropriate means of accomplishing this if you're getting data all at once. For pagination, such as in a website or portal, sort by some value then use filters. I would recommend a field with a high cardinality (e.g. many unique values) because it makes pagination that much easier. I've posted this answer elsewhere, but I'll post it here, too. Let's say you're sorting by CreateDate or ID. Your first...",
-  "source_url": "https://salesforce.stackexchange.com/questions/22631/workaround-for-offset-2000-limit-on-soql-query"
+  "category": "OmniStudio",
+  "problem_title": "How to display parent fields in FlexCard Datatable?",
+  "problem": "I am trying to display a simple data table with Opportunity fields as well as parent fields, however, it seems that there is no (intuitive) way for me to display the parent fields, such as Account. My query: My datatable JSON: ] So I don't know if it's possible to amend the JSON to display this, but in the declarative DataTable box I cannot see the parent field, i.e. FirstName (yep, person accounts are on) When I...",
+  "code": "select StageName, Account.FirstName from Opportunity limit 3",
+  "fixed_code": "[\n    {\n        \"attributes\": {\n            \"type\": \"Opportunity\",\n            \"url\": \"/services/data/v60.0/sobjects/Opportunity/0062Z00000WdlzbQAB\"\n        },\n        \"Id\": \"0067Z00020WdlzbQAB\",\n        \"AccountId\": \"00172000026uBNjQAM\",\n        \"Account\": {\n            \"attributes\": {\n...",
+  "explanation": "The query you're using will return you an array of Opportunity objects, and each Opportunity object will contain a nested Account object. This is why the output shows [object Object]. Example of the JSON returned using the query: Solution: Create an integration procedure: Make the IP call a dataraptor extract: Use response action to fetch the data back to the calling component (in our case a Flexcard): And lastly...",
+  "source_url": "https://salesforce.stackexchange.com/questions/419683/how-to-display-parent-fields-in-flexcard-datatable"
 }
