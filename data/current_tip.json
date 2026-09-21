@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Get lists of dependent picklist options in Apex",
-  "problem": "I have a pair of dependent picklists. In Apex code, how can I determine what options are valid in the dependent field for each option in the controlling field? I've tried using getPicklistValues() , but there doesn't seem to be any way of getting dependency information. Example Controlling_Field__c Fruit, Vegetable, Dairy Dependent_Field__c (Fruit): Apple, Banana, Pear (Vegetable): Tomato, Egglant, Lettuce (Dairy):...",
-  "code": "controllingOptions = dependentfield.getPicklistValues();\nfor (option : controllingOptions) {\n    dependentOptions = dependentfield.getPicklistValuesFor(option);\n    do_something_with_it();\n}",
-  "fixed_code": "example pke.validFor: g      A      A      A\ndisplayed as bits:    100000 000000 000000 000000\nrearranged as bytes:  10000000 00000000 00000000",
-  "explanation": "Salesforce doesn't reveal information about dependent picklists in normal Describe calls in Apex, but it is included in calls via the API, and can also be accessed through Apex by serializing and deserializing PicklistEntry objects (see gist linked below for an example of how to do that). Each PicklistEntry in a dependent field has a property called validFor which contains a Base64 encoded string. When decoded to...",
-  "source_url": "https://salesforce.stackexchange.com/questions/4462/get-lists-of-dependent-picklist-options-in-apex"
+  "category": "SOQL",
+  "problem_title": "How do I build a SOQL query for records in a list of IDs?",
+  "problem": "Can some one correct my soql? I need to export records in data loader like: But this following query does not work for me:",
+  "code": "WHERE Id IN ('123123123','123123fsdf')",
+  "fixed_code": "SELECT Id, Syndication_Documents__c \n   FROM ContentVersion \n   WHERE Syndication_Documents__c IN ('a4fa0000000KzbV','a4fa0000000KzbW')",
+  "explanation": "If it's not in Apex code you don't need the : and you need to add ( ) So your SOQL could be rewritten as: If you're doing it from Apex and have a Collection (Set, List, or Map) you can bind them to the query and avoid the string manipulation:",
+  "source_url": "https://salesforce.stackexchange.com/questions/17695/how-do-i-build-a-soql-query-for-records-in-a-list-of-ids"
 }
