@@ -1,7 +1,7 @@
 {
-  "category": "SOQL",
-  "problem_title": "How do I build a SOQL query for records in a list of IDs?",
-  "caption": "How do I build a SOQL query for records in a list of IDs?\n\n🔴 The Problem: Can some one correct my soql? I need to export records in data loader like: But this following query does not work for me:\n\n✅ The Fix: If it's not in Apex code you don't need the : and you need to add ( ) So your SOQL could be rewritten as: If you're doing it from Apex and have a Collection (Set, List, or Map) you can bind them to the query and avoid the string manipulation:\n\nOriginally asked on Salesforce Stack Exchange (CC BY-SA): https://salesforce.stackexchange.com/questions/17695/how-do-i-build-a-soql-query-for-records-in-a-list-of-ids\n\n💾 Save this for later & follow @sf_daily_tips for a new Salesforce tip every day.\n💬 Questions? Drop them in the comments ↓\n\n#SOQL #Salesforce #SFDC #Database #ApexCode #SalesforceTips #SalesforceDeveloper #Trailblazer #CodeNewbie #100DaysOfCode",
+  "category": "OmniStudio",
+  "problem_title": "Problem with Omniscript's Custom Lightning Stylesheet File",
+  "caption": "Problem with Omniscript's Custom Lightning Stylesheet File\n\n🔴 The Problem: I inserted a Custom Lightning Stylesheet File into my Omniscript, but it is working not only on it, but on all page record the component is on. How to fix this? The Custom Lightning Stylesheet File :\n\n✅ The Fix: I solved it adding flexipage-component2[data-component-id=\"c_myOmniscriptName\"] before each tag\n\nOriginally asked on Salesforce Stack Exchange (CC BY-SA): https://salesforce.stackexchange.com/questions/427735/problem-with-omniscripts-custom-lightning-stylesheet-file\n\n💾 Save this for later & follow @sf_daily_tips for a new Salesforce tip every day.\n💬 Questions? Drop them in the comments ↓\n\n#OmniStudio #Salesforce #Vlocity #SFDC #IndustriesCloud #SalesforceTips #SalesforceDeveloper #Trailblazer #CodeNewbie #100DaysOfCode",
   "slide1_file": "output/tipdaily_slide1.png",
   "slide2_file": "output/tipdaily_slide2.png",
   "slide3_file": "output/tipdaily_slide3.png"

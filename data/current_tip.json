@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "How do I build a SOQL query for records in a list of IDs?",
-  "problem": "Can some one correct my soql? I need to export records in data loader like: But this following query does not work for me:",
-  "code": "WHERE Id IN ('123123123','123123fsdf')",
-  "fixed_code": "SELECT Id, Syndication_Documents__c \n   FROM ContentVersion \n   WHERE Syndication_Documents__c IN ('a4fa0000000KzbV','a4fa0000000KzbW')",
-  "explanation": "If it's not in Apex code you don't need the : and you need to add ( ) So your SOQL could be rewritten as: If you're doing it from Apex and have a Collection (Set, List, or Map) you can bind them to the query and avoid the string manipulation:",
-  "source_url": "https://salesforce.stackexchange.com/questions/17695/how-do-i-build-a-soql-query-for-records-in-a-list-of-ids"
+  "category": "OmniStudio",
+  "problem_title": "Problem with Omniscript's Custom Lightning Stylesheet File",
+  "problem": "I inserted a Custom Lightning Stylesheet File into my Omniscript, but it is working not only on it, but on all page record the component is on. How to fix this? The Custom Lightning Stylesheet File :",
+  "code": ".slds-accordion__summary-action {\n    background: rgb(243, 243, 243);\n}\n\n.omni-read-only [data-omni-input] .slds-radio_faux, .omni-read-only [data-omni-input] input:not([type=range]):not([type=checkbox]):not([type=radio]), .omni-read-only [data-omni-input] input[type=url], .omni-read-only [data-omni-input] select, .omni-read-only [data-omni-input] textarea {\n    border-color: transparent !important ;\n    color: black;\n    caret-color: transparent;\n    background: transparent;\n    border-bottom: var(--lwc-borderWidthThin,1px) solid var(--slds-g-color-border-base-1, var(--lwc-colorBorder,rgb(229, 229, 229))) !important;\n...",
+  "fixed_code": "flexipage-component2[data-component-id=\"c_myOmniscriptName\"] .slds-accordion__summary-action {\n    background: rgb(243, 243, 243);\n}\n\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] .slds-radio_faux,\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] input:not([type=range]):not([type=checkbox]):not([type=radio]),\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] input[type=url],\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] select,\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] textarea {\n    border-color: transparent !important;\n...",
+  "explanation": "I solved it adding flexipage-component2[data-component-id=\"c_myOmniscriptName\"] before each tag",
+  "source_url": "https://salesforce.stackexchange.com/questions/427735/problem-with-omniscripts-custom-lightning-stylesheet-file"
 }
