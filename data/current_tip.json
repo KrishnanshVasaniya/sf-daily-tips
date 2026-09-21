@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "Can't invoke @InvocableMethod via the REST API",
-  "problem": "I've been trying to use the new Spring '15 functionality related to Invocable Actions / @InvocableMethod / @InvocableVariable using the current documentation: https://www.salesforce.com/us/developer/docs/api_rest/ http://releasenotes.docs.salesforce.com/spring15/spring15/release-notes/rn_forcecom_flow_apex.htm...",
-  "code": "https://yourInstance.salesforce.com/services/data/v33.0/actions/custom/apex/InvocableClass",
-  "fixed_code": "public class InvocableClass {\n    @InvocableMethod\n    public static List<Account> InsertAccount(List <String> names) {\n\n       List<Account> myAccounts = new List<Account>();\n       for (String  accName: names)\n       {\n         Account acc = new Account(Name = accName);\n         myAccounts.add(acc) ;\n       }\n...",
-  "explanation": "... and here it is the way to do it: To be able to execute the @InvocableMethod that is in the class, this method needs to have the one permitted parameter. If the method is defined without the parameter then this is not executed, since the REST API doesn't have enough information to know what needs to be executed / invoked. Therefore this is the way to implement the @InvocableMethod and the corresponding call:...",
-  "source_url": "https://salesforce.stackexchange.com/questions/64116/cant-invoke-invocablemethod-via-the-rest-api"
+  "category": "Apex",
+  "problem_title": "Get lists of dependent picklist options in Apex",
+  "problem": "I have a pair of dependent picklists. In Apex code, how can I determine what options are valid in the dependent field for each option in the controlling field? I've tried using getPicklistValues() , but there doesn't seem to be any way of getting dependency information. Example Controlling_Field__c Fruit, Vegetable, Dairy Dependent_Field__c (Fruit): Apple, Banana, Pear (Vegetable): Tomato, Egglant, Lettuce (Dairy):...",
+  "code": "controllingOptions = dependentfield.getPicklistValues();\nfor (option : controllingOptions) {\n    dependentOptions = dependentfield.getPicklistValuesFor(option);\n    do_something_with_it();\n}",
+  "fixed_code": "example pke.validFor: g      A      A      A\ndisplayed as bits:    100000 000000 000000 000000\nrearranged as bytes:  10000000 00000000 00000000",
+  "explanation": "Salesforce doesn't reveal information about dependent picklists in normal Describe calls in Apex, but it is included in calls via the API, and can also be accessed through Apex by serializing and deserializing PicklistEntry objects (see gist linked below for an example of how to do that). Each PicklistEntry in a dependent field has a property called validFor which contains a Base64 encoded string. When decoded to...",
+  "source_url": "https://salesforce.stackexchange.com/questions/4462/get-lists-of-dependent-picklist-options-in-apex"
 }
