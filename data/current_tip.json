@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "Problem with Omniscript's Custom Lightning Stylesheet File",
-  "problem": "I inserted a Custom Lightning Stylesheet File into my Omniscript, but it is working not only on it, but on all page record the component is on. How to fix this? The Custom Lightning Stylesheet File :",
-  "code": ".slds-accordion__summary-action {\n    background: rgb(243, 243, 243);\n}\n\n.omni-read-only [data-omni-input] .slds-radio_faux, .omni-read-only [data-omni-input] input:not([type=range]):not([type=checkbox]):not([type=radio]), .omni-read-only [data-omni-input] input[type=url], .omni-read-only [data-omni-input] select, .omni-read-only [data-omni-input] textarea {\n    border-color: transparent !important ;\n    color: black;\n    caret-color: transparent;\n    background: transparent;\n    border-bottom: var(--lwc-borderWidthThin,1px) solid var(--slds-g-color-border-base-1, var(--lwc-colorBorder,rgb(229, 229, 229))) !important;\n...",
-  "fixed_code": "flexipage-component2[data-component-id=\"c_myOmniscriptName\"] .slds-accordion__summary-action {\n    background: rgb(243, 243, 243);\n}\n\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] .slds-radio_faux,\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] input:not([type=range]):not([type=checkbox]):not([type=radio]),\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] input[type=url],\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] select,\nflexipage-component2[data-component-id=\"c_myOmniscriptName\"] .omni-read-only [data-omni-input] textarea {\n    border-color: transparent !important;\n...",
-  "explanation": "I solved it adding flexipage-component2[data-component-id=\"c_myOmniscriptName\"] before each tag",
-  "source_url": "https://salesforce.stackexchange.com/questions/427735/problem-with-omniscripts-custom-lightning-stylesheet-file"
+  "category": "LWC",
+  "problem_title": "LWC as QuickAction in Salesforce",
+  "problem": "I have made a quick action in lightning web component and want ot make that compponent available for quick action. I havenot found any guide or documentation regarding this. Can you please suggest on how to make the lwc available for quick action.",
+  "code": null,
+  "fixed_code": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<LightningComponentBundle xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n   <apiVersion>52.0</apiVersion>\n   <isExposed>true</isExposed>\n   <targets>\n       <target>lightning__RecordAction</target>\n   </targets>\n    <targetConfigs>\n   <targetConfig targets=\"lightning__RecordAction\">\n     <actionType>Action</actionType>\n...",
+  "explanation": "[EDIT] Starting the Summer '21 release, you be able to use lightning web components directly as a Quick Action as described here . You'll just need to set the myComponent.js-meta.xml metadata file accordingly: The original answer is still valid for some use cases where Lightning web components are not supported yet, like Global Actions. [/EDIT] Original answer: This is not supported yet. You can have a look to...",
+  "source_url": "https://salesforce.stackexchange.com/questions/252191/lwc-as-quickaction-in-salesforce"
 }
