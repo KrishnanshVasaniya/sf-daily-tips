@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "Enable/Disable Process Builder Processes all at once",
-  "problem": "BACKGROUND I found this really useful tool called Salesforce Config Switch which allows me to easily enable and disable processes on mass in one go. But it's throwing a 500 error at the moment. QUESTION Are there any other similar tools out there?",
-  "code": null,
-  "fixed_code": "<aura:component controller=\"FlowManagerController\" implements=\"flexipage:availableForAllPageTypes\">\n\n<aura:handler name=\"init\" value=\"{!this}\" action=\"{!c.doInit}\"/>\n\n<aura:attribute name=\"flows\" type=\"Object\"/>\n<aura:attribute name=\"selectedFlows\" type=\"List\"/>\n<aura:attribute name=\"columns\" type=\"List\" default=\"[                                        \n                                                    {label: 'Developer Name', fieldName: 'DeveloperName', initialWidth: 500, type: 'text' },                                             \n                                                    {label: 'Active', fieldName: 'Active', initialWidth: 150, type: 'boolean'},                                             \n                                                    {label: 'Action', type: 'button', initialWidth: 200, typeAttributes:\n...",
-  "explanation": "I wrote a lightning component to allow me to easily enable and disable flows en masse . It lists all the latest Flows, and give you buttons to: Toggle Selected Flows Enable All Flows Disable All Flows Component JavaScript Controller JavaScript Helper Apex Controller SETUP Create Connected App Create Auth. Provider Create Named Credential Create Lightning App Page called Flow Manager",
-  "source_url": "https://salesforce.stackexchange.com/questions/226587/enable-disable-process-builder-processes-all-at-once"
+  "category": "Apex",
+  "problem_title": "How do you deserialize json properties that are reserved words in Apex?",
+  "problem": "Is there any way to deserialize JSON into an object using JSON.deserialize if some of the property names in the JSON are reserved words in Apex? I want to do something like this: but of course I get an error that the identifier name is reserved.",
+  "code": "string jsonString = '{\"currency\" : \"ABC\"}';\npublic class JSONResult\n{\n    public string currency;\n}\nJSONResult res = (JSONResult) JSON.deserialize(jsonString, JSONResult.class);\nsystem.debug(res);",
+  "fixed_code": null,
+  "explanation": "There are 2 ways that you could solve this problem, neither of them is exactly what you're looking for, but I think it's the best apex offers. Perform a string replace on the json string, the implications of this is unintended replacement of valid text inside a string, but this could be mitigated if the form of the json is as you've supplied \"currency\": \"ABC\" you could string replace:...",
+  "source_url": "https://salesforce.stackexchange.com/questions/2276/how-do-you-deserialize-json-properties-that-are-reserved-words-in-apex"
 }
