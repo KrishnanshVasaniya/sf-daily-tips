@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "SOQL vs SOSL - Which one to use and when?",
-  "problem": "What arguments can be made to use SOQL or SOSL? When would you use one over the other? What is the main difference?",
-  "code": null,
-  "fixed_code": "**Description**                                                        **Limit**\nTotal number of SOQL queries issued                                    100\nTotal number of SOQL queries issued for Batch Apex and future methods  200\nTotal number of records retrieved by SOQL queries                      50,000\nTotal number of records retrieved by Database.getQueryLocator          10,000\nTotal number of SOSL queries issued                                    20\nTotal number of records retrieved by a single SOSL query               200",
-  "explanation": "Let's make a quick comparison of the two: Definition SOQL (Salesforce Object Query Language) Use the Salesforce Object Query Language (SOQL) to construct simple but powerful query strings in the queryString parameter in the query() call, in Apex statements, in Visualforce controllers and getter methods, or in the Schema Explorer of the Force.com IDE. Similar to the SELECT command in Structured Query Language (SQL),...",
-  "source_url": "https://salesforce.stackexchange.com/questions/9028/soql-vs-sosl-which-one-to-use-and-when"
+  "category": "OmniStudio",
+  "problem_title": "How to display error message conditionally in omniscript based on remote action response",
+  "problem": "I have a remote action that calls Apex class from OmniScript after 'Next' click. The logic in apex class is complex and might result in a situation where user can not move ahead in the omniscript flow and we need to show them an error message which is something as \"You can not proceed ahead due to so-and-so reason\". This is one of the scenarios, while at other times if the apex logic verifies that user can navigate...",
+  "code": "{\n\"language\": \"Multi-Language\",\n\"type\": \"test\",\n\"runMode\": \"preview\",\n\"LanguageCode\": \"en_US\",\n\"theme\": \"lightning\",\n\"subType\": \"createOpportunity\",\n\"timeStamp\": \"2024-07-01T12:36:47.117Z\",\n\"userProfile\": \"System Administrator\",\n\"userTimeZoneName\": \"America/Los_Angeles\",\n...",
+  "fixed_code": null,
+  "explanation": "The 2nd approach has worked. It did not refresh earlier probably, or required multiple refreshes.",
+  "source_url": "https://salesforce.stackexchange.com/questions/423531/how-to-display-error-message-conditionally-in-omniscript-based-on-remote-action"
 }
