@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "How to display error message conditionally in omniscript based on remote action response",
-  "problem": "I have a remote action that calls Apex class from OmniScript after 'Next' click. The logic in apex class is complex and might result in a situation where user can not move ahead in the omniscript flow and we need to show them an error message which is something as \"You can not proceed ahead due to so-and-so reason\". This is one of the scenarios, while at other times if the apex logic verifies that user can navigate...",
-  "code": "{\n\"language\": \"Multi-Language\",\n\"type\": \"test\",\n\"runMode\": \"preview\",\n\"LanguageCode\": \"en_US\",\n\"theme\": \"lightning\",\n\"subType\": \"createOpportunity\",\n\"timeStamp\": \"2024-07-01T12:36:47.117Z\",\n\"userProfile\": \"System Administrator\",\n\"userTimeZoneName\": \"America/Los_Angeles\",\n...",
-  "fixed_code": null,
-  "explanation": "The 2nd approach has worked. It did not refresh earlier probably, or required multiple refreshes.",
-  "source_url": "https://salesforce.stackexchange.com/questions/423531/how-to-display-error-message-conditionally-in-omniscript-based-on-remote-action"
+  "category": "LWC",
+  "problem_title": "LWC navigation error: \"this[f.NavigationMixin.Navigate] is not a function\"",
+  "problem": "When attempting to use the Lightning navigation service in my component's base class (.js), I get the following error when functionally testing in the UI: this[f.NavigationMixin.Navigate] is not a function I am calling the NavigationMixin function provided by the lightning/navigation module. I have imported the module: import { NavigationMixin } from 'lightning/navigation'; And am calling the function as below:...",
+  "code": null,
+  "fixed_code": "export default class MyLwcComponent extends NavigationMixin(LightningElement) {",
+  "explanation": "Apply the NavigationMixin function to your component’s base class: Hopefully this saves 3 mins of searching for those who (like me) only skimmed the documentation before diving in :)",
+  "source_url": "https://salesforce.stackexchange.com/questions/254496/lwc-navigation-error-thisf-navigationmixin-navigate-is-not-a-function"
 }
