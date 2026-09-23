@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "How do you deserialize json properties that are reserved words in Apex?",
-  "problem": "Is there any way to deserialize JSON into an object using JSON.deserialize if some of the property names in the JSON are reserved words in Apex? I want to do something like this: but of course I get an error that the identifier name is reserved.",
-  "code": "string jsonString = '{\"currency\" : \"ABC\"}';\npublic class JSONResult\n{\n    public string currency;\n}\nJSONResult res = (JSONResult) JSON.deserialize(jsonString, JSONResult.class);\nsystem.debug(res);",
-  "fixed_code": null,
-  "explanation": "There are 2 ways that you could solve this problem, neither of them is exactly what you're looking for, but I think it's the best apex offers. Perform a string replace on the json string, the implications of this is unintended replacement of valid text inside a string, but this could be mitigated if the form of the json is as you've supplied \"currency\": \"ABC\" you could string replace:...",
-  "source_url": "https://salesforce.stackexchange.com/questions/2276/how-do-you-deserialize-json-properties-that-are-reserved-words-in-apex"
+  "category": "SOQL",
+  "problem_title": "SOQL vs SOSL - Which one to use and when?",
+  "problem": "What arguments can be made to use SOQL or SOSL? When would you use one over the other? What is the main difference?",
+  "code": null,
+  "fixed_code": "**Description**                                                        **Limit**\nTotal number of SOQL queries issued                                    100\nTotal number of SOQL queries issued for Batch Apex and future methods  200\nTotal number of records retrieved by SOQL queries                      50,000\nTotal number of records retrieved by Database.getQueryLocator          10,000\nTotal number of SOSL queries issued                                    20\nTotal number of records retrieved by a single SOSL query               200",
+  "explanation": "Let's make a quick comparison of the two: Definition SOQL (Salesforce Object Query Language) Use the Salesforce Object Query Language (SOQL) to construct simple but powerful query strings in the queryString parameter in the query() call, in Apex statements, in Visualforce controllers and getter methods, or in the Schema Explorer of the Force.com IDE. Similar to the SELECT command in Structured Query Language (SQL),...",
+  "source_url": "https://salesforce.stackexchange.com/questions/9028/soql-vs-sosl-which-one-to-use-and-when"
 }
