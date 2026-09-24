@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Setting a from address in SingleEmailMessage",
-  "problem": "I want to set a from address in a salesforce SingleEmailMessage, but can't see a way to do this and there is no standard method described in the documentation. I want the email to be sent from doNotReply@blahblah.com, however, the email address of the user editing the record (which triggers the email send) is used as from address. I'm using the following code: But my code only changes the display name, not the email...",
-  "code": "mail.setReplyTo(fromaddress);\nmail.setSenderDisplayName(fromaddress);",
-  "fixed_code": "OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'doNotReply@blahblah.com'];\nMessaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();\nif ( owea.size() > 0 ) {\n    mail.setOrgWideEmailAddressId(owea.get(0).Id);\n}",
-  "explanation": "To do this you must first set up a dedicated email address by navigating to Setup -> Administration Setup -> Email Administration -> Organization-Wide Addresses menu. Once you have created an org-wide address (note that Salesforce will require you to confirm the address prior to using it, so if you're going to be sending things from a junk address it would be wise to set up a catch-all mailbox so you receive the...",
-  "source_url": "https://salesforce.stackexchange.com/questions/1243/setting-a-from-address-in-singleemailmessage"
+  "category": "SOQL",
+  "problem_title": "When To Use Set vs. List In SOQL",
+  "problem": "I have always assumed that it is better to use a Set in my query filters instead of a List . For example: My reasoning was: Set can be more easily (and quickly) generated from a Map via keySet() . Set ought to consume less memory than List (no longer sure this is true). null values can more easily be removed from a Set . Set cannot contain any duplicate values. What are the actual benefits to using Set instead of...",
+  "code": "Set<Id> parentIds = generateParentIds();\nList<Child__c> children = [SELECT Id FROM Child__c WHERE Parent__c IN :parentIds];",
+  "fixed_code": "Account[] accounts = [SELECT Id FROM Account];\nContact[] contacts = [SELECT AccountId FROM Contact WHERE AccountId IN :accounts];",
+  "explanation": "(tl;dr at bottom) Filter Speed If you can use Map.keySet() , you'll get a Set back in about 1/10th of the time versus a loop over those same records and adding all the values. Of course, the Map<Id, SObject>(List<SObject>) constructor only works on Id , not on related ID values, which means you'd have to fall back to a loop. However, in cases where you just want to use the ID of a list of records for the purpose of...",
+  "source_url": "https://salesforce.stackexchange.com/questions/110320/when-to-use-set-vs-list-in-soql"
 }
