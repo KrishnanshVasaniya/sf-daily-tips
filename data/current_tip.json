@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "LWC navigation error: \"this[f.NavigationMixin.Navigate] is not a function\"",
-  "problem": "When attempting to use the Lightning navigation service in my component's base class (.js), I get the following error when functionally testing in the UI: this[f.NavigationMixin.Navigate] is not a function I am calling the NavigationMixin function provided by the lightning/navigation module. I have imported the module: import { NavigationMixin } from 'lightning/navigation'; And am calling the function as below:...",
+  "category": "Flow",
+  "problem_title": "How to deactivate a existing active process builder using metadata API?",
+  "problem": "Background : There is only one version of the process builder exists in sandbox, version number is 1 and it is Active. I retrieved this process builder using the command sfdx force:source:retrieve --sourcepath=/path/to/flow --targetusername=sandbox (API version is set to 47.0 in sfdx-project.json ) Goal : Deactivate this process builder by deployment. Attempt 1 : Changed value for status tag in flow xml to Obsolete...",
   "code": null,
-  "fixed_code": "export default class MyLwcComponent extends NavigationMixin(LightningElement) {",
-  "explanation": "Apply the NavigationMixin function to your component’s base class: Hopefully this saves 3 mins of searching for those who (like me) only skimmed the documentation before diving in :)",
-  "source_url": "https://salesforce.stackexchange.com/questions/254496/lwc-navigation-error-thisf-navigationmixin-navigate-is-not-a-function"
+  "fixed_code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<FlowDefinition xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <activeVersionNumber>0</activeVersionNumber>\n</FlowDefinition>",
+  "explanation": "I was able to deactivate process builder as follows: Retrieved FlowDefinition file for the process builder that I am trying to deactivate using the command sfdx force:source:retrieve --metadata=FlowDefinition:ProcessBuilderApiNameGoesHere Updated value for tag activeVersionNumber to 0. Did the deployment using the command sfdx force:source:deploy --sourcepath=/path/to/flowDefinitionfile and it worked(process builder...",
+  "source_url": "https://salesforce.stackexchange.com/questions/298333/how-to-deactivate-a-existing-active-process-builder-using-metadata-api"
 }
