@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "How do you define an element with an ID attribute using LWC?",
-  "problem": "I'd like to be able to link to certain portions of my page using URL fragments, eg: <h3 id=\"overview\">Overview</h3> ... <a href=\"#overview\">Go to Overview</a> Unfortunately the IDs i set from within LWC templates get overwritten, so my links don't work. Is there any way to define the ID attribute so it won't change?",
+  "category": "Flow",
+  "problem_title": "Breaking a flow into 2 different transactions",
+  "problem": "IS there a way to break a single flow into 2 transactions? we have a really long flow that does a huge part of our business process, we are hitting governor limits due to the number of update/inserts/fastlookups etc. I am trying to break the transaction, some of the ways I found were To call an invocable method and call batch apex to recontinue the flow. Insert a wait element. as per docs . A transaction ends as...",
   "code": null,
-  "fixed_code": "this.template.querySelector(\"h3\").scrollIntoView();",
-  "explanation": "Assuming you want to scroll to an element you have access to, you could always use scrollIntoView: You can basically use any valid CSS selector to find a specific element (e.g. based on a data-id or another attribute). As far as I can tell, from a lack of documentation, you can't specify an anchor target. You would write the link like this: Given an H3 like this: And scroll with this: ((Note: Not tested, you might...",
-  "source_url": "https://salesforce.stackexchange.com/questions/256007/how-do-you-define-an-element-with-an-id-attribute-using-lwc"
+  "fixed_code": "public class InvocableSOQLLimit {    \n    @InvocableMethod(label='Check SOQL Limit')\n    public static List<Integer> checkSOQLLimit() {\n        return new List<Integer>{Limits.getQueries()};\n    }\n}",
+  "explanation": "Using a Wait (now called Pause ) element does preserve the Flow's state, including all of its variables and the field values of queried sObjects, across the boundary into a new transaction. As expected, limits are reset across the transaction boundary. This strategy is more or less explicitly endorsed by the documentation : A transaction ends as soon as a flow interview begins to wait for an event. When the flow...",
+  "source_url": "https://salesforce.stackexchange.com/questions/261532/breaking-a-flow-into-2-different-transactions"
 }
