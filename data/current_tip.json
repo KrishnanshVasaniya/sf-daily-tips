@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "When To Use Set vs. List In SOQL",
-  "problem": "I have always assumed that it is better to use a Set in my query filters instead of a List . For example: My reasoning was: Set can be more easily (and quickly) generated from a Map via keySet() . Set ought to consume less memory than List (no longer sure this is true). null values can more easily be removed from a Set . Set cannot contain any duplicate values. What are the actual benefits to using Set instead of...",
-  "code": "Set<Id> parentIds = generateParentIds();\nList<Child__c> children = [SELECT Id FROM Child__c WHERE Parent__c IN :parentIds];",
-  "fixed_code": "Account[] accounts = [SELECT Id FROM Account];\nContact[] contacts = [SELECT AccountId FROM Contact WHERE AccountId IN :accounts];",
-  "explanation": "(tl;dr at bottom) Filter Speed If you can use Map.keySet() , you'll get a Set back in about 1/10th of the time versus a loop over those same records and adding all the values. Of course, the Map<Id, SObject>(List<SObject>) constructor only works on Id , not on related ID values, which means you'd have to fall back to a loop. However, in cases where you just want to use the ID of a list of records for the purpose of...",
-  "source_url": "https://salesforce.stackexchange.com/questions/110320/when-to-use-set-vs-list-in-soql"
+  "category": "OmniStudio",
+  "problem_title": "Scoped imports are not allowed when runtime namespace is specified",
+  "problem": "I'm trying to load a static resource file in lightning web component which is running under vlocity_ins runtime. I'm getting the error Scoped imports are not allowed when runtime namespace is specified Below image shows error in omniscript when previewed on LWC preview tab",
+  "code": "import OmniscriptSelect from 'vlocity_ins/omniscriptSelect';\nimport template from './bhExtendedOmniscriptSelect.html';\nimport { loadStyle } from 'lightning/platformResourceLoader';\nimport newportoverride from '@salesforce/resourceUrl/newportoverride';\n\nexport default class BhExtendedOmniscriptSelect extends OmniscriptSelect {\n    \n    connectedCallback() {\n        super.connectedCallback();\n        this._realtimeOptions = this._realtimeOptions.filter(item => item.label !== '-- Clear --');\n...",
+  "fixed_code": null,
+  "explanation": "This is now supported with Lightning Web Security. Check the documentation here . It's in Open BETA as of March 2022. Previous Answer (Outdated) Importing LWC component or static resource from another namespace is currently not supported as of today. The locker service prevents this today. There is work in progress to support this in the future with safe harbor There is an idea in the below link...",
+  "source_url": "https://salesforce.stackexchange.com/questions/339383/scoped-imports-are-not-allowed-when-runtime-namespace-is-specified"
 }
