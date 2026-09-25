@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "OmniStudio",
-  "problem_title": "Scoped imports are not allowed when runtime namespace is specified",
-  "problem": "I'm trying to load a static resource file in lightning web component which is running under vlocity_ins runtime. I'm getting the error Scoped imports are not allowed when runtime namespace is specified Below image shows error in omniscript when previewed on LWC preview tab",
-  "code": "import OmniscriptSelect from 'vlocity_ins/omniscriptSelect';\nimport template from './bhExtendedOmniscriptSelect.html';\nimport { loadStyle } from 'lightning/platformResourceLoader';\nimport newportoverride from '@salesforce/resourceUrl/newportoverride';\n\nexport default class BhExtendedOmniscriptSelect extends OmniscriptSelect {\n    \n    connectedCallback() {\n        super.connectedCallback();\n        this._realtimeOptions = this._realtimeOptions.filter(item => item.label !== '-- Clear --');\n...",
-  "fixed_code": null,
-  "explanation": "This is now supported with Lightning Web Security. Check the documentation here . It's in Open BETA as of March 2022. Previous Answer (Outdated) Importing LWC component or static resource from another namespace is currently not supported as of today. The locker service prevents this today. There is work in progress to support this in the future with safe harbor There is an idea in the below link...",
-  "source_url": "https://salesforce.stackexchange.com/questions/339383/scoped-imports-are-not-allowed-when-runtime-namespace-is-specified"
+  "category": "LWC",
+  "problem_title": "How do you define an element with an ID attribute using LWC?",
+  "problem": "I'd like to be able to link to certain portions of my page using URL fragments, eg: <h3 id=\"overview\">Overview</h3> ... <a href=\"#overview\">Go to Overview</a> Unfortunately the IDs i set from within LWC templates get overwritten, so my links don't work. Is there any way to define the ID attribute so it won't change?",
+  "code": null,
+  "fixed_code": "this.template.querySelector(\"h3\").scrollIntoView();",
+  "explanation": "Assuming you want to scroll to an element you have access to, you could always use scrollIntoView: You can basically use any valid CSS selector to find a specific element (e.g. based on a data-id or another attribute). As far as I can tell, from a lack of documentation, you can't specify an anchor target. You would write the link like this: Given an H3 like this: And scroll with this: ((Note: Not tested, you might...",
+  "source_url": "https://salesforce.stackexchange.com/questions/256007/how-do-you-define-an-element-with-an-id-attribute-using-lwc"
 }
