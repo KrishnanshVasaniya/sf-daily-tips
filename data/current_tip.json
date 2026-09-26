@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Using sObject.get() to fetch a field value from a related parent object",
-  "problem": "I have a contact in a generic sObject in apex and while I'm able to easily get detail field values using sObject.get('MyContactField__c') I'm not able to get fields off the related parent object, and I'm sure the related field is in memory, based on the debug logs. This returns a runtime error: sObject.get('Account.MyAccountField__c') with the error Invalid field Account.MyAccountField__c' for Contact How do I get a...",
-  "code": null,
-  "fixed_code": "sObject acc = [SELECT Owner.Profile.Name FROM Account LIMIT 1];\nString profileName = (String) acc.getSobject('Owner').getSobject('Profile').get('Name');\nSystem.debug(profileName);",
-  "explanation": "You need getSobject() to traverse relationship \"up\" in a dynamic way. Check all dynamic get* methods in the Sobject instance methods docs .",
-  "source_url": "https://salesforce.stackexchange.com/questions/24801/using-sobject-get-to-fetch-a-field-value-from-a-related-parent-object"
+  "category": "SOQL",
+  "problem_title": "How many SOQL queries are spent for subqueries?",
+  "problem": "Apex Governor Limits docs state that: In a SOQL query with parent-child relationship subqueries, each parent-child relationship counts as an extra query. However, when a query with a single subquery is run, for example: the debug log shows that just 1 SOQL query was spent . That makes sense since subqueries are (left) joins. It's the actual count , not just the count display because I can run 51 queries and limits...",
+  "code": "List<Parent_Object__c> parents = [Select Id, (Select Id from Child_Objects__r) from Parent_Object__c];",
+  "fixed_code": "List<Account> dd = [\n    SELECT \n        id, \n        (SELECT Name FROM Contacts),  // <- first subquery\n        (SELECT AccountID FROM Cases) // <- second subquery\n    FROM \n        Account\n    WHERE \n        id \n    IN (SELECT AccountID FROM Case)   // <- not counted\n...",
+  "explanation": "Let's take the following SOQL: In the above query there are total 3 subqueries + 1 parent query. So, there are 4 queries. But, Salesforce doesn't count subqueries against governor limit of 100 SOQLs . It counts only root query which means only 1 SOQL query would be consumed. Subqueries are counted separately as AggregateQueries . You can check those with Limits.getAggregateQueries() and...",
+  "source_url": "https://salesforce.stackexchange.com/questions/95754/how-many-soql-queries-are-spent-for-subqueries"
 }
