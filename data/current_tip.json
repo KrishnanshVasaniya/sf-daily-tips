@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "How many SOQL queries are spent for subqueries?",
-  "problem": "Apex Governor Limits docs state that: In a SOQL query with parent-child relationship subqueries, each parent-child relationship counts as an extra query. However, when a query with a single subquery is run, for example: the debug log shows that just 1 SOQL query was spent . That makes sense since subqueries are (left) joins. It's the actual count , not just the count display because I can run 51 queries and limits...",
-  "code": "List<Parent_Object__c> parents = [Select Id, (Select Id from Child_Objects__r) from Parent_Object__c];",
-  "fixed_code": "List<Account> dd = [\n    SELECT \n        id, \n        (SELECT Name FROM Contacts),  // <- first subquery\n        (SELECT AccountID FROM Cases) // <- second subquery\n    FROM \n        Account\n    WHERE \n        id \n    IN (SELECT AccountID FROM Case)   // <- not counted\n...",
-  "explanation": "Let's take the following SOQL: In the above query there are total 3 subqueries + 1 parent query. So, there are 4 queries. But, Salesforce doesn't count subqueries against governor limit of 100 SOQLs . It counts only root query which means only 1 SOQL query would be consumed. Subqueries are counted separately as AggregateQueries . You can check those with Limits.getAggregateQueries() and...",
-  "source_url": "https://salesforce.stackexchange.com/questions/95754/how-many-soql-queries-are-spent-for-subqueries"
+  "category": "LWC",
+  "problem_title": "Can't get refreshApex() to work in lwc",
+  "problem": "I'm not able to get refreshApex() working in an lwc. I've read the docs here -- scroll to the bottom . Here are the key elements of the js file: My code varies from the doc examples for 2 reasons: The example code doesn't separate out the Apex response into error and data, the pattern I've been following as shown elsewhere. This data is going into a lightning-tree-grid so I have to process it a bit before assigning...",
+  "code": "import { LightningElement, track, api, wire } from 'lwc';\nimport getBlasts from '@salesforce/apex/Blast.getBlasts';\nimport { refreshApex } from '@salesforce/apex';\n\nexport default class BlastWaveTree extends LightningElement {\n    @api recordId;\n    @track blastData;\n    @track error;\n    @wire(getBlasts, { CampaignId: '$recordId' })\n        wireBlastData({\n...",
+  "fixed_code": null,
+  "explanation": "refreshApex will work only if you pass the complete response as argument. In your case you are fetching response as (data, error) but while calling refreshApex() you are only passing the variable holding the data as argument.",
+  "source_url": "https://salesforce.stackexchange.com/questions/251782/cant-get-refreshapex-to-work-in-lwc"
 }
