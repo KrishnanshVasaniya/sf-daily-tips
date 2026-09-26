@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "Breaking a flow into 2 different transactions",
-  "problem": "IS there a way to break a single flow into 2 transactions? we have a really long flow that does a huge part of our business process, we are hitting governor limits due to the number of update/inserts/fastlookups etc. I am trying to break the transaction, some of the ways I found were To call an invocable method and call batch apex to recontinue the flow. Insert a wait element. as per docs . A transaction ends as...",
+  "category": "Apex",
+  "problem_title": "Using sObject.get() to fetch a field value from a related parent object",
+  "problem": "I have a contact in a generic sObject in apex and while I'm able to easily get detail field values using sObject.get('MyContactField__c') I'm not able to get fields off the related parent object, and I'm sure the related field is in memory, based on the debug logs. This returns a runtime error: sObject.get('Account.MyAccountField__c') with the error Invalid field Account.MyAccountField__c' for Contact How do I get a...",
   "code": null,
-  "fixed_code": "public class InvocableSOQLLimit {    \n    @InvocableMethod(label='Check SOQL Limit')\n    public static List<Integer> checkSOQLLimit() {\n        return new List<Integer>{Limits.getQueries()};\n    }\n}",
-  "explanation": "Using a Wait (now called Pause ) element does preserve the Flow's state, including all of its variables and the field values of queried sObjects, across the boundary into a new transaction. As expected, limits are reset across the transaction boundary. This strategy is more or less explicitly endorsed by the documentation : A transaction ends as soon as a flow interview begins to wait for an event. When the flow...",
-  "source_url": "https://salesforce.stackexchange.com/questions/261532/breaking-a-flow-into-2-different-transactions"
+  "fixed_code": "sObject acc = [SELECT Owner.Profile.Name FROM Account LIMIT 1];\nString profileName = (String) acc.getSobject('Owner').getSobject('Profile').get('Name');\nSystem.debug(profileName);",
+  "explanation": "You need getSobject() to traverse relationship \"up\" in a dynamic way. Check all dynamic get* methods in the Sobject instance methods docs .",
+  "source_url": "https://salesforce.stackexchange.com/questions/24801/using-sobject-get-to-fetch-a-field-value-from-a-related-parent-object"
 }
