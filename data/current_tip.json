@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Can't get refreshApex() to work in lwc",
-  "problem": "I'm not able to get refreshApex() working in an lwc. I've read the docs here -- scroll to the bottom . Here are the key elements of the js file: My code varies from the doc examples for 2 reasons: The example code doesn't separate out the Apex response into error and data, the pattern I've been following as shown elsewhere. This data is going into a lightning-tree-grid so I have to process it a bit before assigning...",
-  "code": "import { LightningElement, track, api, wire } from 'lwc';\nimport getBlasts from '@salesforce/apex/Blast.getBlasts';\nimport { refreshApex } from '@salesforce/apex';\n\nexport default class BlastWaveTree extends LightningElement {\n    @api recordId;\n    @track blastData;\n    @track error;\n    @wire(getBlasts, { CampaignId: '$recordId' })\n        wireBlastData({\n...",
-  "fixed_code": null,
-  "explanation": "refreshApex will work only if you pass the complete response as argument. In your case you are fetching response as (data, error) but while calling refreshApex() you are only passing the variable holding the data as argument.",
-  "source_url": "https://salesforce.stackexchange.com/questions/251782/cant-get-refreshapex-to-work-in-lwc"
+  "category": "Flow",
+  "problem_title": "Get Size of Collections in Flow",
+  "problem": "I was excited to see an idea I was about to post, already delivered (rare happenstance with me and Salesforce), but apparently the release notes just link to the ideas page that says it was delivered Summer 18' but no details/instructions to implement it. Idea: Get Size of Collections in Flow Anyone know how to get size of Collection within a Flow?",
+  "code": null,
+  "fixed_code": "{!myCollectionSize} equals count {!myCollection}",
+  "explanation": "It's cleverly hidden in the section titled \"Update Active Stages and Collections with New Assignment Operators\" in the release notes. Basically, you can use an assignment formula to determine the size of your collection: And from there, you can then use that value in conditional controls, etc.",
+  "source_url": "https://salesforce.stackexchange.com/questions/234240/get-size-of-collections-in-flow"
 }
