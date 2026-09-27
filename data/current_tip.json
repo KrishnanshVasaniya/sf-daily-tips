@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "Get Size of Collections in Flow",
-  "problem": "I was excited to see an idea I was about to post, already delivered (rare happenstance with me and Salesforce), but apparently the release notes just link to the ideas page that says it was delivered Summer 18' but no details/instructions to implement it. Idea: Get Size of Collections in Flow Anyone know how to get size of Collection within a Flow?",
-  "code": null,
-  "fixed_code": "{!myCollectionSize} equals count {!myCollection}",
-  "explanation": "It's cleverly hidden in the section titled \"Update Active Stages and Collections with New Assignment Operators\" in the release notes. Basically, you can use an assignment formula to determine the size of your collection: And from there, you can then use that value in conditional controls, etc.",
-  "source_url": "https://salesforce.stackexchange.com/questions/234240/get-size-of-collections-in-flow"
+  "category": "Apex",
+  "problem_title": "Call Apex class method on the fly (dynamically)",
+  "problem": "Is there any way I can call apex method from class if both class name and method are stored in the string. now I want to call above method.. is it possible ? I was doing research and came across following - (not sure how this works and how to call it from salesforce) http://www.salesforce.com/us/developer/docs/apexcode/Content/sforce_api_calls_executeanonymous.htm",
+  "code": "String strClass = 'BatchUtil';\nString strMethod = 'updateAccounts'",
+  "fixed_code": "public class Extension implements Callable {\n\n   // Actual method\n   String concatStrings(String stringValue) {\n     return stringValue + stringValue;\n   }\n\n   // Actual method\n   Decimal multiplyNumbers(Decimal decimalValue) {\n     return decimalValue * decimalValue;\n...",
+  "explanation": "With the Callable interface that was introduced in Winter '19 you can now build a light weight interface for the methods you want to dynamically call from a class. The example below is from the docs (tweaked to show dynamic method naming): Example class you want to dynamically call Unit test demonstrating the dynamic calling",
+  "source_url": "https://salesforce.stackexchange.com/questions/1035/call-apex-class-method-on-the-fly-dynamically"
 }
