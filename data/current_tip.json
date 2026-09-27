@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Call Apex class method on the fly (dynamically)",
-  "problem": "Is there any way I can call apex method from class if both class name and method are stored in the string. now I want to call above method.. is it possible ? I was doing research and came across following - (not sure how this works and how to call it from salesforce) http://www.salesforce.com/us/developer/docs/apexcode/Content/sforce_api_calls_executeanonymous.htm",
-  "code": "String strClass = 'BatchUtil';\nString strMethod = 'updateAccounts'",
-  "fixed_code": "public class Extension implements Callable {\n\n   // Actual method\n   String concatStrings(String stringValue) {\n     return stringValue + stringValue;\n   }\n\n   // Actual method\n   Decimal multiplyNumbers(Decimal decimalValue) {\n     return decimalValue * decimalValue;\n...",
-  "explanation": "With the Callable interface that was introduced in Winter '19 you can now build a light weight interface for the methods you want to dynamically call from a class. The example below is from the docs (tweaked to show dynamic method naming): Example class you want to dynamically call Unit test demonstrating the dynamic calling",
-  "source_url": "https://salesforce.stackexchange.com/questions/1035/call-apex-class-method-on-the-fly-dynamically"
+  "category": "SOQL",
+  "problem_title": "What is the maximum number of items in a SOQL IN clause?",
+  "problem": "Oracle has a limit of 1000 items for its IN clause. Is there a similar limit in SOQL? The SF documentation on the IN clause does not mention any limit. To clarify the definition of an item, the following example has 2 items in its IN clause: the above code was taken from the linked SF documentation.",
+  "code": "SELECT Name FROM Widget__c\nWHERE Name IN ('Ring', 'Flange')",
+  "fixed_code": null,
+  "explanation": "I think you are limited to the size of the query not exceeding 20,000 characters. https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_soslsoql.htm SOQL statements can't exceed 20,000 characters. For SOQL statements that exceed this maximum length, the API returns a MALFORMED_QUERY exception code ; no result rows are...",
+  "source_url": "https://salesforce.stackexchange.com/questions/25719/what-is-the-maximum-number-of-items-in-a-soql-in-clause"
 }
