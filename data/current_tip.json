@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "What is the maximum number of items in a SOQL IN clause?",
-  "problem": "Oracle has a limit of 1000 items for its IN clause. Is there a similar limit in SOQL? The SF documentation on the IN clause does not mention any limit. To clarify the definition of an item, the following example has 2 items in its IN clause: the above code was taken from the linked SF documentation.",
-  "code": "SELECT Name FROM Widget__c\nWHERE Name IN ('Ring', 'Flange')",
-  "fixed_code": null,
-  "explanation": "I think you are limited to the size of the query not exceeding 20,000 characters. https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_soslsoql.htm SOQL statements can't exceed 20,000 characters. For SOQL statements that exceed this maximum length, the API returns a MALFORMED_QUERY exception code ; no result rows are...",
-  "source_url": "https://salesforce.stackexchange.com/questions/25719/what-is-the-maximum-number-of-items-in-a-soql-in-clause"
+  "category": "LWC",
+  "problem_title": "Add Lightning Web Component to Lightning Tab",
+  "problem": "I am trying to figure out how to add a Lightning Web Component to a Lightning tab. I have it on the Home Page, but I would like it to be on its own tab. I feel like there should be an option to expose it to the Lightning tabs. When I am in the Tabs section, I don't see my LWC listed.",
+  "code": null,
+  "fixed_code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<LightningComponentBundle xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <apiVersion>62.0</apiVersion>\n    <isExposed>true</isExposed>\n    <targets>\n        <target>lightning__Tab</target>\n    </targets>\n</LightningComponentBundle>",
+  "explanation": "From Winter 20 release you are able to set it as Tab. All you need to do is: Open -meta.xml file from your LWC component Change is exposed to True: <isExposed>true</isExposed> Add <target>lightning__Tab</target> Open Tab from setup and under Lightning Component Tabs press New and select your LWC component. Your file at the end should look like this: As stated in comments, My Domain is a prerequisite to Lightning...",
+  "source_url": "https://salesforce.stackexchange.com/questions/253890/add-lightning-web-component-to-lightning-tab"
 }
