@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "How to bulkify Flow call from Apex",
-  "problem": "I have a process built with a Process Builder. It fires on contact update/create. Under certain conditions that process launches a Flow. Flow accepts two Parameters - ContactId and AccountId. If I do mass update/insert of the contacts and flow is launched through the process, the flow is automatically bulkified disregarding the fact that flow itself accepts a single value of each Id. So, if I upload 100 contacts the...",
-  "code": "Map<String, String> allParams = new Map<String, String>();\nallParams.put('003XXXXXXXXXXX1', '001XXXXXXXXXXX1');\nallParams.put('003XXXXXXXXXXX2', '001XXXXXXXXXXX2');\nallParams.put('003XXXXXXXXXXX3', '001XXXXXXXXXXX3');\nallParams.put('003XXXXXXXXXXX4', '001XXXXXXXXXXX4');\n\nfor(String contactId : allParams.keySet()){\n    Map<String, Object> params = new Map<String, Object>();\n    params.put('ContactId', contactId);\n    params.put('AccountId', allParams.get(contactId));\n...",
-  "fixed_code": "// use the flow name\nInvocable.Action impl;\nimpl = Invocable.Action.createCustomAction('flow', 'Create_Expense');\n\n// prepare a collection of interviews\nimpl.setInvocations(new List<Map<String,Object>>{\n    new Map<String,Object>{'amount' => 1.11}, // 1st interview\n    new Map<String,Object>{'amount' => 2.22}, // 2nd interview\n    new Map<String,Object>{'amount' => 3.33}  // 3rd interview\n});\n...",
-  "explanation": "Winter '23 enables Apex to bulk invoke Flows - many interviews, one transaction. The capability comes with the Invocable.Action classes. The invoke method can mass run any invocable step or indeed entire flows. Not to be confused with Flow.Interview.start which only supports a single interview. This uses Flow's bulk engine and doesn't involve collection variable workarounds. The flow is bulkified automatically. It...",
-  "source_url": "https://salesforce.stackexchange.com/questions/271376/how-to-bulkify-flow-call-from-apex"
+  "category": "Apex",
+  "problem_title": "How to run a scheduled job every 15 minutes?",
+  "problem": "Using the salesforce GUI it seams impossible to schedule a job every 15 minutes. Or more than once a day.",
+  "code": null,
+  "fixed_code": "System.schedule('Scheduled Job 1', '0 0 * * * ?', new ScheduledClass());\nSystem.schedule('Scheduled Job 2', '0 15 * * * ?', new ScheduledClass());\nSystem.schedule('Scheduled Job 3', '0 30 * * * ?', new ScheduledClass());\nSystem.schedule('Scheduled Job 4', '0 45 * * * ?', new ScheduledClass());",
+  "explanation": "Jobs cannot be scheduled in increments smaller than one hour. Please read the documentation to learn about how you can schedule jobs that run in more complex patterns than the GUI allows. In Apex, you can schedule four jobs to every hour, staggered 15 minutes apart:",
+  "source_url": "https://salesforce.stackexchange.com/questions/37333/how-to-run-a-scheduled-job-every-15-minutes"
 }
