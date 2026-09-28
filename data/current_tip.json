@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Add Lightning Web Component to Lightning Tab",
-  "problem": "I am trying to figure out how to add a Lightning Web Component to a Lightning tab. I have it on the Home Page, but I would like it to be on its own tab. I feel like there should be an option to expose it to the Lightning tabs. When I am in the Tabs section, I don't see my LWC listed.",
-  "code": null,
-  "fixed_code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<LightningComponentBundle xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <apiVersion>62.0</apiVersion>\n    <isExposed>true</isExposed>\n    <targets>\n        <target>lightning__Tab</target>\n    </targets>\n</LightningComponentBundle>",
-  "explanation": "From Winter 20 release you are able to set it as Tab. All you need to do is: Open -meta.xml file from your LWC component Change is exposed to True: <isExposed>true</isExposed> Add <target>lightning__Tab</target> Open Tab from setup and under Lightning Component Tabs press New and select your LWC component. Your file at the end should look like this: As stated in comments, My Domain is a prerequisite to Lightning...",
-  "source_url": "https://salesforce.stackexchange.com/questions/253890/add-lightning-web-component-to-lightning-tab"
+  "category": "Flow",
+  "problem_title": "How to bulkify Flow call from Apex",
+  "problem": "I have a process built with a Process Builder. It fires on contact update/create. Under certain conditions that process launches a Flow. Flow accepts two Parameters - ContactId and AccountId. If I do mass update/insert of the contacts and flow is launched through the process, the flow is automatically bulkified disregarding the fact that flow itself accepts a single value of each Id. So, if I upload 100 contacts the...",
+  "code": "Map<String, String> allParams = new Map<String, String>();\nallParams.put('003XXXXXXXXXXX1', '001XXXXXXXXXXX1');\nallParams.put('003XXXXXXXXXXX2', '001XXXXXXXXXXX2');\nallParams.put('003XXXXXXXXXXX3', '001XXXXXXXXXXX3');\nallParams.put('003XXXXXXXXXXX4', '001XXXXXXXXXXX4');\n\nfor(String contactId : allParams.keySet()){\n    Map<String, Object> params = new Map<String, Object>();\n    params.put('ContactId', contactId);\n    params.put('AccountId', allParams.get(contactId));\n...",
+  "fixed_code": "// use the flow name\nInvocable.Action impl;\nimpl = Invocable.Action.createCustomAction('flow', 'Create_Expense');\n\n// prepare a collection of interviews\nimpl.setInvocations(new List<Map<String,Object>>{\n    new Map<String,Object>{'amount' => 1.11}, // 1st interview\n    new Map<String,Object>{'amount' => 2.22}, // 2nd interview\n    new Map<String,Object>{'amount' => 3.33}  // 3rd interview\n});\n...",
+  "explanation": "Winter '23 enables Apex to bulk invoke Flows - many interviews, one transaction. The capability comes with the Invocable.Action classes. The invoke method can mass run any invocable step or indeed entire flows. Not to be confused with Flow.Interview.start which only supports a single interview. This uses Flow's bulk engine and doesn't involve collection variable workarounds. The flow is bulkified automatically. It...",
+  "source_url": "https://salesforce.stackexchange.com/questions/271376/how-to-bulkify-flow-call-from-apex"
 }
