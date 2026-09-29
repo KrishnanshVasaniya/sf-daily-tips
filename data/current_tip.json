@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "How to query NOT LIKE?",
-  "problem": "the soql in the following code is failing. The error message is: \"Compile failure on line 6, column 5: Unexpected token '<'.\" When I run the Query in SOQL Editor, it says \"unexpected token: AND\" When I remove one of the clauses from the where statement, it works. I do not understand whats wrong with the query. I tried wrapping the query with in parenthesis too, but no luck. for example",
-  "code": "Map<Id, String> profileIds = new Map<Id, String>();\nprofileIds.put('00eee000000xxxx','System Administrator');\nprofileIds.put('00eee00000yyyyy','YYY Profile');\nprofileIds.put('00eee00000zzzzz','ZZZ Profile');\n\nList<User> users = [SELECT Id, Name, Email, ProfileId FROM User WHERE NOT(Email like '%@example.com') AND ProfileId NOT IN :profileIds.keySet()];\nSystem.debug(users.size());\nfor (User usr: users)\n{\n    System.debug(usr.id+'    '+usr.Email);\n...",
-  "fixed_code": "NOT(Field__c LIKE 'fuzzymatch')",
-  "explanation": "You have your parentheses wrong. Instead of: Use:",
-  "source_url": "https://salesforce.stackexchange.com/questions/203272/how-to-query-not-like"
+  "category": "LWC",
+  "problem_title": "Lightning Web Component for table rows and cells",
+  "problem": "I'm trying to build a LWC that renders a complex table-based UI. It needs to have distinct rows and columns with dynamically-determined colspans - a real table. It's for assigning lodging, and each row will represent a room and each column for which the room can be assigned. It will involve drag/drop etc. I was hoping to make each row and each cell a component, so that data and logic could be encapsulated in each of...",
+  "code": "<template>\n<p>\n    This is our very nice room table!\n</p>\n<table style=\"border:1px black solid\">\n    <!--header row goes here -->\n    <template for:each={rooms} for:item=\"room\">\n        <c-ncilodgeroomtablerow key={room}>\n        </c-ncilodgeroomtablerow>\n    </template>\n...",
+  "fixed_code": "<table class=\"slds-table slds-table_bordered slds-border_left slds-border_right\">\n  <thead>\n    <tr class=\"slds-line-height_reset\">\n      <th class=\"\" scope=\"col\">\n        <div class=\"slds-truncate\" title=\"Name\">Name</div>\n      </th>\n      <th class=\"\" scope=\"col\">\n        <div class=\"slds-truncate\" title=\"Some Custom Column\">Some Custom Column</div>\n      </th>\n    </tr>\n...",
+  "explanation": "Building on the answer provided already by @sfdcfox, this following seems to be working for me and allows me to componentize the entire row (much easier to emit events this way). parent.html childRow.html And the critical piece on childRow.css",
+  "source_url": "https://salesforce.stackexchange.com/questions/251100/lightning-web-component-for-table-rows-and-cells"
 }
