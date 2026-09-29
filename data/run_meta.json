@@ -1,7 +1,7 @@
 {
-  "category": "Apex",
-  "problem_title": "How to run a scheduled job every 15 minutes?",
-  "caption": "How to run a scheduled job every 15 minutes?\n\n🔴 The Problem: Using the salesforce GUI it seams impossible to schedule a job every 15 minutes. Or more than once a day.\n\n✅ The Fix: Jobs cannot be scheduled in increments smaller than one hour. Please read the documentation to learn about how you can schedule jobs that run in more complex patterns than the GUI allows. In Apex, you can schedule four jobs to every hour, staggered 15 minutes apart:\n\nOriginally asked on Salesforce Stack Exchange (CC BY-SA): https://salesforce.stackexchange.com/questions/37333/how-to-run-a-scheduled-job-every-15-minutes\n\n💾 Save this for later & follow @sf_daily_tips for a new Salesforce tip every day.\n💬 Questions? Drop them in the comments ↓\n\n#Apex #Salesforce #SalesforceDeveloper #ApexCode #SFDC #SalesforceTips #SalesforceDeveloper #Trailblazer #CodeNewbie #100DaysOfCode",
+  "category": "SOQL",
+  "problem_title": "How to query NOT LIKE?",
+  "caption": "How to query NOT LIKE?\n\n🔴 The Problem: the soql in the following code is failing. The error message is: \"Compile failure on line 6, column 5: Unexpected token '<'.\" When I run the Query in SOQL Editor, it says \"unexpected token: AND\" When I remove one of the clauses from the where statement, it works. I do not understand whats wrong with the query. I tried wrapping the query with in parenthesis too, but no luck. for example\n\n✅ The Fix: You have your parentheses wrong. Instead of: Use:\n\nOriginally asked on Salesforce Stack Exchange (CC BY-SA): https://salesforce.stackexchange.com/questions/203272/how-to-query-not-like\n\n💾 Save this for later & follow @sf_daily_tips for a new Salesforce tip every day.\n💬 Questions? Drop them in the comments ↓\n\n#SOQL #Salesforce #SFDC #Database #ApexCode #SalesforceTips #SalesforceDeveloper #Trailblazer #CodeNewbie #100DaysOfCode",
   "slide1_file": "output/tipdaily_slide1.png",
   "slide2_file": "output/tipdaily_slide2.png",
   "slide3_file": "output/tipdaily_slide3.png"
