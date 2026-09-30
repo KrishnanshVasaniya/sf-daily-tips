@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "Using SOQL apex bind variables for date literals (e.g. LAST_N_DAYS, TODAY, THIS_QUARTER)",
-  "problem": "Is there anyway I can use a variable value for LAST_N_DAYS. For example, I am trying to do something like: But I get:",
-  "code": "Integer lastDays = 7;\n//... \n//...\nList<Opportunity> opportunities = [SELECT OwnerId, Amount, Probability FROM OPPORTUNITY \nwhere Amount > 0 and LastModifiedDate < LAST_N_DAYS:lastDays];",
-  "fixed_code": "Date d = System.today() - 7;\nList<Opportunity> opportunities = [SELECT OwnerId, Amount, Probability FROM OPPORTUNITY \nwhere Amount > 0 and LastModifiedDate < :d];",
-  "explanation": "Wow, that's an interesting one! I doubt it's allowed though (at least without having to use Dynamic SOQL). You can always do this instead:",
-  "source_url": "https://salesforce.stackexchange.com/questions/7515/using-soql-apex-bind-variables-for-date-literals-e-g-last-n-days-today-this"
+  "category": "LWC",
+  "problem_title": "How do I invoke a value change handler in LWC?",
+  "problem": "Is there a way in LWC to declare an attribute value change handler like there was in Aura? My use case is that I have a pager component which has 2 @api properties. When either of the @api values are changed, i'd like to reset the state of the component. So when, for example, pageSize is changed by the parent component, then I'd like to reset the currentPage to 1. To be a little more explicit, the parent component...",
+  "code": "import { LightningElement, api, track } from 'lwc';\n\nexport default class Pager extends LightningElement {\n    @api pagerData;  // rows of data being paged\n    @api pageSize;   // the size of the page\n\n    @track currentPage;  // 1s based page number (i.e. 1 is first 'index')\n\n    ... \n    // (other properties that get number of pages, etc.) \n...",
+  "fixed_code": "<template>\n  <lightning-input onchange={changePageSize}></lightning-input>\n  <c-child page-size={pageSize}></c-test-child>\n</template>",
+  "explanation": "You can use getters and setters like the following to detect changes when a parent component passes a new @api value. Per the docs : To execute logic each time a public property is set, write a custom setter. If you write a setter for a public property, you must also write a getter. Annotate either the getter or the setter with @api, but not both. It’s a best practice to annotate the getter. Parent.html Parent.js...",
+  "source_url": "https://salesforce.stackexchange.com/questions/253588/how-do-i-invoke-a-value-change-handler-in-lwc"
 }
