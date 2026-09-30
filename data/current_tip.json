@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "How to reference Choice Value in formula instead of its label?",
-  "problem": "I have a Picklist screen component in a Flow which has many choices defined in the same flow: Now I need to make a formula that references the Choice Value of a given choice: If I use UPPER({!Plan} + '_PRODUCT_A') I get (OLD) STARTER_PRODUCT_A instead of STARTER_PRODUCT_A as I expected. I therefore seem to be getting the choice label when I use the {!Plan} placeholder instead of the choice value . On the suggestion...",
-  "code": "UPPER(TEXT({!Plan}) + '_PRODUCT_A')",
-  "fixed_code": null,
-  "explanation": "For whatever reason, as noted here , you seem to get the label if you refer to the field, but you get the value if you pass the field into a record element/variable. As @Mitesh stated, you should be able to store the Choice Value as a variable and get what you need. Create the variable. Click on Manager --> New Resource Select Variable for Resource Type . Leave default as blank and select available for input and...",
-  "source_url": "https://salesforce.stackexchange.com/questions/293464/how-to-reference-choice-value-in-formula-instead-of-its-label"
+  "category": "Apex",
+  "problem_title": "What would be the best approach to get the recordtype id",
+  "problem": "I know of two approaches to get the recordtype id of a particular record type Use SOQL Benifit here is if the admin changes the name of the record type, the code still works as we can use developer name Using Describe Saves on SOQL limits but uses a describe call. What would be your choice and why EDIT : Usage is for setting up recordtype while inserting records in apex or trigger",
+  "code": "RecordType RecType = [Select Id From RecordType  Where SobjectType = 'Account' and DeveloperName = 'Business'];",
+  "fixed_code": "//Record types cache\nprivate static Map<Schema.SObjectType,Map<String,Id>> rtypesCache;\nprivate static List<sObject> results;\nstatic {\n    rtypesCache = new Map<Schema.SObjectType,Map<String,Id>>();//convenient map, formatted from results.\n    results = new List<sObject>();//contains all recordtypes retrieved via SOQL\n}\n\n// Returns a map of active, user-available RecordType IDs for a given SObjectType,\n// keyed by each RecordType's unique, unchanging DeveloperName \n...",
+  "explanation": "If you want to develop an industrial-strength Force.com application, i.e. an AppExchange app, you CANNOT rely on either the Id or Name fields of RecordTypes as a means of getting at a desired RecordType for a given object. Why? Because the Id will be different in every customer's org, and the Name may be different in every customer's org AND for each Running User, depending on the user's language. Therefore, it is...",
+  "source_url": "https://salesforce.stackexchange.com/questions/11968/what-would-be-the-best-approach-to-get-the-recordtype-id"
 }
