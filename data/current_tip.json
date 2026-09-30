@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "What would be the best approach to get the recordtype id",
-  "problem": "I know of two approaches to get the recordtype id of a particular record type Use SOQL Benifit here is if the admin changes the name of the record type, the code still works as we can use developer name Using Describe Saves on SOQL limits but uses a describe call. What would be your choice and why EDIT : Usage is for setting up recordtype while inserting records in apex or trigger",
-  "code": "RecordType RecType = [Select Id From RecordType  Where SobjectType = 'Account' and DeveloperName = 'Business'];",
-  "fixed_code": "//Record types cache\nprivate static Map<Schema.SObjectType,Map<String,Id>> rtypesCache;\nprivate static List<sObject> results;\nstatic {\n    rtypesCache = new Map<Schema.SObjectType,Map<String,Id>>();//convenient map, formatted from results.\n    results = new List<sObject>();//contains all recordtypes retrieved via SOQL\n}\n\n// Returns a map of active, user-available RecordType IDs for a given SObjectType,\n// keyed by each RecordType's unique, unchanging DeveloperName \n...",
-  "explanation": "If you want to develop an industrial-strength Force.com application, i.e. an AppExchange app, you CANNOT rely on either the Id or Name fields of RecordTypes as a means of getting at a desired RecordType for a given object. Why? Because the Id will be different in every customer's org, and the Name may be different in every customer's org AND for each Running User, depending on the user's language. Therefore, it is...",
-  "source_url": "https://salesforce.stackexchange.com/questions/11968/what-would-be-the-best-approach-to-get-the-recordtype-id"
+  "category": "SOQL",
+  "problem_title": "Using SOQL apex bind variables for date literals (e.g. LAST_N_DAYS, TODAY, THIS_QUARTER)",
+  "problem": "Is there anyway I can use a variable value for LAST_N_DAYS. For example, I am trying to do something like: But I get:",
+  "code": "Integer lastDays = 7;\n//... \n//...\nList<Opportunity> opportunities = [SELECT OwnerId, Amount, Probability FROM OPPORTUNITY \nwhere Amount > 0 and LastModifiedDate < LAST_N_DAYS:lastDays];",
+  "fixed_code": "Date d = System.today() - 7;\nList<Opportunity> opportunities = [SELECT OwnerId, Amount, Probability FROM OPPORTUNITY \nwhere Amount > 0 and LastModifiedDate < :d];",
+  "explanation": "Wow, that's an interesting one! I doubt it's allowed though (at least without having to use Dynamic SOQL). You can always do this instead:",
+  "source_url": "https://salesforce.stackexchange.com/questions/7515/using-soql-apex-bind-variables-for-date-literals-e-g-last-n-days-today-this"
 }
