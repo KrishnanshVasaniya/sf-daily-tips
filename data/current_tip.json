@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "How do I invoke a value change handler in LWC?",
-  "problem": "Is there a way in LWC to declare an attribute value change handler like there was in Aura? My use case is that I have a pager component which has 2 @api properties. When either of the @api values are changed, i'd like to reset the state of the component. So when, for example, pageSize is changed by the parent component, then I'd like to reset the currentPage to 1. To be a little more explicit, the parent component...",
-  "code": "import { LightningElement, api, track } from 'lwc';\n\nexport default class Pager extends LightningElement {\n    @api pagerData;  // rows of data being paged\n    @api pageSize;   // the size of the page\n\n    @track currentPage;  // 1s based page number (i.e. 1 is first 'index')\n\n    ... \n    // (other properties that get number of pages, etc.) \n...",
-  "fixed_code": "<template>\n  <lightning-input onchange={changePageSize}></lightning-input>\n  <c-child page-size={pageSize}></c-test-child>\n</template>",
-  "explanation": "You can use getters and setters like the following to detect changes when a parent component passes a new @api value. Per the docs : To execute logic each time a public property is set, write a custom setter. If you write a setter for a public property, you must also write a getter. Annotate either the getter or the setter with @api, but not both. It’s a best practice to annotate the getter. Parent.html Parent.js...",
-  "source_url": "https://salesforce.stackexchange.com/questions/253588/how-do-i-invoke-a-value-change-handler-in-lwc"
+  "category": "Flow",
+  "problem_title": "Help with FLOW/Apex Error: System.CalloutException: You have uncommitted work pending. Please commit or rollback before calling out",
+  "problem": "I've already looked through all the related posts and can't find a solution for this error: Error Occurred: An Apex error occurred: System.CalloutException: You have uncommitted work pending. Please commit or rollback before calling out Here's my situation: I have a FLOW that waits for a platform event, pulls the keyword from the event params, if that keyword is null, it calls an @invokableMethod that calls out to...",
+  "code": "public class ARpromptKeyword\n{\n    @InvocableMethod(label='Send AutoResponse Keyword' description='Needs recipientNumber.')\n    public static void sendAutoResponseKeyword(List<String> recipientNumber)\n    {\n        System.debug('sendAutoResponseKeyword called');\n        String FromNumber = TwilioAPI.getFromNumber();\n\n        //instantiate the Twilio REST client\n        TwilioRestClient client = TwilioAPI.getDefaultClient();\n...",
+  "fixed_code": " public class FlowARpromptKeyword\n{\n    @InvocableMethod(label='Send AutoResponse Keyword' description='Needs recipientNumber.')\n    public static void callARpromptKeyword(List<string> recipientNumber)\n    {\n        ARpromptKeyword.sendAutoResponseKeyword(recipientNumber[0]);\n    }\n}",
+  "explanation": "Found the answer, I think, or at least a reasonable workaround. I remembered that Triggers can't make callouts -- they can only call an @future method to do so. I wondered if Flows are the same, so I tried the following: Flow calls an @InvokableMethod, which in turn, calls an @future method to make the callout. It works! And...",
+  "source_url": "https://salesforce.stackexchange.com/questions/205933/help-with-flow-apex-error-system-calloutexception-you-have-uncommitted-work-pe"
 }
