@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "Using a date for a datetime field in a SOQL Query",
-  "problem": "The SF doc explains how to put a Datetime query in a SOQL query. I need to just put in a date for this query. Something like: But that throws an error. Any ideas?",
-  "code": "SELECT Id\nFROM Account\nWHERE CreatedDate > 2005-10-08T01:02:03Z",
-  "fixed_code": "WHERE CreatedDate > 2005-10-08T00:00:00Z",
-  "explanation": "CreatedDate is a datetime field so I guess you would need to specify the time component. Can you do something like where you just append the time portion to be 12 am by default. Or you can use Date Literals like For more on date formats and more literal values see, https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_dateformats.htm",
-  "source_url": "https://salesforce.stackexchange.com/questions/8896/using-a-date-for-a-datetime-field-in-a-soql-query"
+  "category": "LWC",
+  "problem_title": "Chain wire methods together in Lightning Web Components",
+  "problem": "According to the documentation here in order to retrieve a list of picklist values for an object we need to pass in a Record Type Id which can be retrieved using the getObjectInfo method. The issue is that these are both wire functions and I cannot figure out how to chain these methods. If I try code like the following: getObjectInfo({ objectApiName: ACCOUNT_OBJECT }) .then(result => { return...",
+  "code": null,
+  "fixed_code": "@wire(getPicklistValues, {recordTypeId: \"$rtId\", fieldApiName: TYPE_FIELD})\npicklistValues;",
+  "explanation": "You have to use dynamic binding: This is mentioned in Use the Wire Service to Get Data . I wrote a mockup that demonstrates this. You should be able to copy-paste this code directly. <template> <template if:true={hasPicklistValues}> <select> <template for:each={picklistValues.data.values} for:item=\"entry\"> <option key={entry.value} value={entry.label}>{entry.label}</option> </template> </select> </template>...",
+  "source_url": "https://salesforce.stackexchange.com/questions/255958/chain-wire-methods-together-in-lightning-web-components"
 }
