@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Chain wire methods together in Lightning Web Components",
-  "problem": "According to the documentation here in order to retrieve a list of picklist values for an object we need to pass in a Record Type Id which can be retrieved using the getObjectInfo method. The issue is that these are both wire functions and I cannot figure out how to chain these methods. If I try code like the following: getObjectInfo({ objectApiName: ACCOUNT_OBJECT }) .then(result => { return...",
-  "code": null,
-  "fixed_code": "@wire(getPicklistValues, {recordTypeId: \"$rtId\", fieldApiName: TYPE_FIELD})\npicklistValues;",
-  "explanation": "You have to use dynamic binding: This is mentioned in Use the Wire Service to Get Data . I wrote a mockup that demonstrates this. You should be able to copy-paste this code directly. <template> <template if:true={hasPicklistValues}> <select> <template for:each={picklistValues.data.values} for:item=\"entry\"> <option key={entry.value} value={entry.label}>{entry.label}</option> </template> </select> </template>...",
-  "source_url": "https://salesforce.stackexchange.com/questions/255958/chain-wire-methods-together-in-lightning-web-components"
+  "category": "Flow",
+  "problem_title": "Adding visual force page to a custom object based on criteria",
+  "problem": "There is a custom object called Competitor. For this object there is a field called \" Primary Competitor (Data type:Check Box)\". Requirement:if primary competitor=checked-->then before saving it has to check if there are any primary competitors has present.If so it has to display an error message in a popup with \"yes\" \"no\" buttons on it.As shown in image If yes then it has to add new competitor else remain same....",
+  "code": "<apex:page standardController=\"Competitor__c\">\n\n<script type=\"text/javascript\">\nif(Competitor__c.Primary_Competitor__c==\"True\")\n\ndocument.body.style.cursor=\"auto\";\nvar box=new SimpleDialog(\"Test\", true);\nbox.setTitle(\"Is Primary Competitor\");\nbox.createDialog();\n    box.setContentInnerHTML(\"<b>There is a primary Competitor existing, setting this Competitor as primary will remove the primary check on the other Competitor. Please confirm if you want to go ahead?</b><input type=\\\"button\\\" value=\\\"Yes\\\"  onclick=\\\"javascript:box.hide();\\\" /> <input type=\\\"button\\\" value=\\\"No\\\"  onclick=\\\"No();\\\" />\");\n...",
+  "fixed_code": null,
+  "explanation": "Your code will fire as soon as the page is loaded and only generate the alert if the initial value of primary competitor is true. When you say have added it to the page layout, is that as an embedded Visualforce page in the record view? The Visualforce will only be present for the view page, not for the edit page. There's no supported way to achieve what you are attempting using standard pages - you either need to...",
+  "source_url": "https://salesforce.stackexchange.com/questions/18758/adding-visual-force-page-to-a-custom-object-based-on-criteria"
 }
