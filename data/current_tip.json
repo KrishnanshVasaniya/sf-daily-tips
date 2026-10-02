@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "Adding visual force page to a custom object based on criteria",
-  "problem": "There is a custom object called Competitor. For this object there is a field called \" Primary Competitor (Data type:Check Box)\". Requirement:if primary competitor=checked-->then before saving it has to check if there are any primary competitors has present.If so it has to display an error message in a popup with \"yes\" \"no\" buttons on it.As shown in image If yes then it has to add new competitor else remain same....",
-  "code": "<apex:page standardController=\"Competitor__c\">\n\n<script type=\"text/javascript\">\nif(Competitor__c.Primary_Competitor__c==\"True\")\n\ndocument.body.style.cursor=\"auto\";\nvar box=new SimpleDialog(\"Test\", true);\nbox.setTitle(\"Is Primary Competitor\");\nbox.createDialog();\n    box.setContentInnerHTML(\"<b>There is a primary Competitor existing, setting this Competitor as primary will remove the primary check on the other Competitor. Please confirm if you want to go ahead?</b><input type=\\\"button\\\" value=\\\"Yes\\\"  onclick=\\\"javascript:box.hide();\\\" /> <input type=\\\"button\\\" value=\\\"No\\\"  onclick=\\\"No();\\\" />\");\n...",
-  "fixed_code": null,
-  "explanation": "Your code will fire as soon as the page is loaded and only generate the alert if the initial value of primary competitor is true. When you say have added it to the page layout, is that as an embedded Visualforce page in the record view? The Visualforce will only be present for the view page, not for the edit page. There's no supported way to achieve what you are attempting using standard pages - you either need to...",
-  "source_url": "https://salesforce.stackexchange.com/questions/18758/adding-visual-force-page-to-a-custom-object-based-on-criteria"
+  "category": "Apex",
+  "problem_title": "Lead Conversion Trigger Order of Execution",
+  "problem": "I've got a project where I'm looking to tweak the standard lead conversion process. Triggers and lead conversion has always been funky in past projects so I was hoping to start the design off by reviewing the order of execution, but after a long google search I'm coming up empty handed. Anyone out there know the specific trigger order for lead conversion? Edit: I'm not asking about trigger execution order for any...",
+  "code": null,
+  "fixed_code": "If (trigger.isUpdate && Lead.IsConverted && !trigger.oldmap.get(lead.id).IsConverted)\n//do your stuff",
+  "explanation": "The usual order of execution detailed at http://www.salesforce.com/us/developer/docs/apexcode/Content/apex_triggers_order_of_execution.htm still applies with some special considerations The Before triggers and validation rules do not fire unless that checkbox is ticked under Customise > Lead > Settings. Note that for orgs created prior to '08 you'll need to contact support to enable this ( related answer ) After...",
+  "source_url": "https://salesforce.stackexchange.com/questions/3956/lead-conversion-trigger-order-of-execution"
 }
