@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Lead Conversion Trigger Order of Execution",
-  "problem": "I've got a project where I'm looking to tweak the standard lead conversion process. Triggers and lead conversion has always been funky in past projects so I was hoping to start the design off by reviewing the order of execution, but after a long google search I'm coming up empty handed. Anyone out there know the specific trigger order for lead conversion? Edit: I'm not asking about trigger execution order for any...",
-  "code": null,
-  "fixed_code": "If (trigger.isUpdate && Lead.IsConverted && !trigger.oldmap.get(lead.id).IsConverted)\n//do your stuff",
-  "explanation": "The usual order of execution detailed at http://www.salesforce.com/us/developer/docs/apexcode/Content/apex_triggers_order_of_execution.htm still applies with some special considerations The Before triggers and validation rules do not fire unless that checkbox is ticked under Customise > Lead > Settings. Note that for orgs created prior to '08 you'll need to contact support to enable this ( related answer ) After...",
-  "source_url": "https://salesforce.stackexchange.com/questions/3956/lead-conversion-trigger-order-of-execution"
+  "category": "SOQL",
+  "problem_title": "Use Set<Id> in dynamic SOQL IN-clause in method without Database.query()",
+  "problem": "I know and love that Apex is automatically converting Set to a valid SOQL string when it is used referenced like and passed to a Database.query() in the SAME method But how can I get that when my method does NOT include the actual database query? I know I could convert it with loops and string manipulation but maybe someone came up with a better solution, e.g. a method where you pass in a Set that are referenced in...",
+  "code": "Set<Id> ids = ...\nString soql = 'SELECT ... WHERE Id IN :ids';",
+  "fixed_code": "public class MyTestClass{\n\n    public List<sObject> myList {get; set;}\n    public Set<Id> set1 = new Set<id>{'001E000000fpkEJ'};\n    public Set<Id> set2 = new Set<id>{'006E0000005Ry3S'};\n\n    public final String soql1 = 'Select Name From Account Where Id IN :XXX';\n    public final String soql2 = 'Select Name From Opportunity Where Id IN :XXX';\n\n    public MyTestClass(){\n...",
+  "explanation": "I've just tried some apex to execute the Database.query() dynamically. The logic is to get the soql query from somewhere and put it to the Database.query() in some method that gets the set of id's at the same time (i hope i understand the question right). So i've created a list method that gets a soql as a string where the set name not specifically defined (just a XXX placeholder) and the actual set name. It works...",
+  "source_url": "https://salesforce.stackexchange.com/questions/19162/use-setid-in-dynamic-soql-in-clause-in-method-without-database-query"
 }
