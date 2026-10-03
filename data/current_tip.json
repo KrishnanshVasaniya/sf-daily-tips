@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "LWC",
-  "problem_title": "Order of execution of @wire in lwc",
-  "problem": "I know that @wire methods are always executed once our component is loaded. I want to dig deep into this and want to understand the order of execution with respect to the component's life cycle. When it is actually that the @wire method will be invoked. Is it after constructor() , before renderedcallback() ? If that is the case then is it not always beneficial to get data using Imperative apex(from the constructor()...",
-  "code": null,
-  "fixed_code": "async connectedCallback() {\n  await Promise.resolve();\n  let apexResults = await Promise.all([ method1(params), method2(params) ])\n  // Do something with results\n}",
-  "explanation": "In a typical wire setup, the life cycle will be: constructor wire provisions empty object ({data, error} are each undefined) connectedCallback render renderedCallback wire provisions results from server render (if dirty data) renderedCallback (ditto) Using imperative Apex in the constructor, you end up with: constructor connectedCallback render renderedCallback Apex call returns data render (if dirty data)...",
-  "source_url": "https://salesforce.stackexchange.com/questions/377190/order-of-execution-of-wire-in-lwc"
+  "category": "Flow",
+  "problem_title": "Deploying Flow via Migration Tool, object \"Campaign\" can not be updated",
+  "problem": "Am using the Migration Tool to move a bunch of stuff including Flows from one Sandbox to another. Am getting this error on several of the flows: Seems strange because the flows work in the source sandbox. Anyone seen this error before?",
+  "code": "The object \"Campaign\" can't be updated through a flow.",
+  "fixed_code": null,
+  "explanation": "Ah, I figured it out: The user I was doing the deploy with did not have the 'Marketing User' checkbox ticked in user settings - hence did not have access to the Campaign object. Once I enabled 'Marketing User' the deploy was OK",
+  "source_url": "https://salesforce.stackexchange.com/questions/97339/deploying-flow-via-migration-tool-object-campaign-can-not-be-updated"
 }
