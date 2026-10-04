@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "SOQL: Count number of child records",
-  "problem": "This is a basic SOQL question. I have a number of Application (custom) objects that are children to the User (standard) object. I want to count the number of Applications associated with each User. Looking at the documentation I can get a query like this to work: But how do I get a count associated with each User?",
-  "code": "SELECT Name, (SELECT id FROM Applications__r) FROM User",
-  "fixed_code": "List<User> users = [SELECT Name, (SELECT id FROM Applications__r) FROM User];\nfor (User u : users) {\n    // do something with it...\n    u.Applications__r.size();\n}",
-  "explanation": "You could use your current query and get the size attribute of the list after the query finishes: Alternatively, you can use an AggregateResult query which would query the child and group by the User Id lookup. This would not retrieve any information about Users that don't have any Applications, though. Also, if the User field is not required, all Applications that don't have a User would be put in the grouping...",
-  "source_url": "https://salesforce.stackexchange.com/questions/36690/soql-count-number-of-child-records"
+  "category": "Apex",
+  "problem_title": "How Can I Tell the Day of the Week of a Date?",
+  "problem": "I'd like to build in some logic based on the weekday (e.g. Monday, Tuesday, Wednesday) of a given date. How can I identify the date, using either formulas or Apex code?",
+  "code": null,
+  "fixed_code": "// Cast the Date variable into a DateTime\nDateTime myDateTime = (DateTime) myDate;\nString dayOfWeek = myDateTime.format('E');\n// dayOfWeek is Sun, Mon, Tue, etc.",
+  "explanation": "Formulas There isn't a built-in function to do this for you, but you... UPDATE: As of Spring 2018, there's a built-in function for this: WEEKDAY() . It returns an integer where 1 is Sunday, 2 is Monday, 3 is Tuesday, etc. Apex Code You could do the same thing with time deltas, but you can also use the poorly documented DateTime.format() function :",
+  "source_url": "https://salesforce.stackexchange.com/questions/1192/how-can-i-tell-the-day-of-the-week-of-a-date"
 }
