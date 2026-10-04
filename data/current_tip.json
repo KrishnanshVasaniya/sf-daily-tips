@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Flow",
-  "problem_title": "Deploying Flow via Migration Tool, object \"Campaign\" can not be updated",
-  "problem": "Am using the Migration Tool to move a bunch of stuff including Flows from one Sandbox to another. Am getting this error on several of the flows: Seems strange because the flows work in the source sandbox. Anyone seen this error before?",
-  "code": "The object \"Campaign\" can't be updated through a flow.",
-  "fixed_code": null,
-  "explanation": "Ah, I figured it out: The user I was doing the deploy with did not have the 'Marketing User' checkbox ticked in user settings - hence did not have access to the Campaign object. Once I enabled 'Marketing User' the deploy was OK",
-  "source_url": "https://salesforce.stackexchange.com/questions/97339/deploying-flow-via-migration-tool-object-campaign-can-not-be-updated"
+  "category": "Apex",
+  "problem_title": "How can I get 'Recent Items' object Ids in Apex (soql) is it possible",
+  "problem": "'Recent Items' pane shows recently viewed records for the selected tab. The list is derived from your recent items and includes records owned by you and other users. Is there any way to get this in apex?",
+  "code": null,
+  "fixed_code": "SELECT Id, Name\nFROM RecentlyViewed \nWHERE Type IN ('Account', 'Contact')\nORDER BY LastViewedDate DESC ",
+  "explanation": "There is a new object available in Summer '13 called RecentlyViewed that you can use in SOQL to get a user's recently viewed records.",
+  "source_url": "https://salesforce.stackexchange.com/questions/4243/how-can-i-get-recent-items-object-ids-in-apex-soql-is-it-possible"
 }
