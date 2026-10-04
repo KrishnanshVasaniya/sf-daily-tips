@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "How can I get 'Recent Items' object Ids in Apex (soql) is it possible",
-  "problem": "'Recent Items' pane shows recently viewed records for the selected tab. The list is derived from your recent items and includes records owned by you and other users. Is there any way to get this in apex?",
-  "code": null,
-  "fixed_code": "SELECT Id, Name\nFROM RecentlyViewed \nWHERE Type IN ('Account', 'Contact')\nORDER BY LastViewedDate DESC ",
-  "explanation": "There is a new object available in Summer '13 called RecentlyViewed that you can use in SOQL to get a user's recently viewed records.",
-  "source_url": "https://salesforce.stackexchange.com/questions/4243/how-can-i-get-recent-items-object-ids-in-apex-soql-is-it-possible"
+  "category": "SOQL",
+  "problem_title": "SOQL: Count number of child records",
+  "problem": "This is a basic SOQL question. I have a number of Application (custom) objects that are children to the User (standard) object. I want to count the number of Applications associated with each User. Looking at the documentation I can get a query like this to work: But how do I get a count associated with each User?",
+  "code": "SELECT Name, (SELECT id FROM Applications__r) FROM User",
+  "fixed_code": "List<User> users = [SELECT Name, (SELECT id FROM Applications__r) FROM User];\nfor (User u : users) {\n    // do something with it...\n    u.Applications__r.size();\n}",
+  "explanation": "You could use your current query and get the size attribute of the list after the query finishes: Alternatively, you can use an AggregateResult query which would query the child and group by the User Id lookup. This would not retrieve any information about Users that don't have any Applications, though. Also, if the User field is not required, all Applications that don't have a User would be put in the grouping...",
+  "source_url": "https://salesforce.stackexchange.com/questions/36690/soql-count-number-of-child-records"
 }
