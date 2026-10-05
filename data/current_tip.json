@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "Does LAST_N_DAYS:1 Include TODAY?",
-  "problem": "I would like to ask about the definition of LAST_N_DAYS:n For the number n provided, starts 00:00:00 of the current day and continues for the past n days. Is equal to and To be more specific, isn't LAST_N_DAYS in fact LAST_N_DAYS + 1 (Today)?",
-  "code": "CreatedDate = LAST_N_DAYS:1",
-  "fixed_code": "SELECT CreatedDate FROM MyObject__c\nWHERE CreatedDate = LAST_N_DAYS:1\nORDER BY CreatedDate DESC LIMIT 1",
-  "explanation": "In contradiction to what the current documentation claims, you can observe that the LAST_N_DAYS date literal includes today's data . To be sure, I ran this query: And I got back: 2017-08-31T18:16:17.000+0000",
-  "source_url": "https://salesforce.stackexchange.com/questions/190643/does-last-n-days1-include-today"
+  "category": "Apex",
+  "problem_title": "Deleting Triggers/Classes from Production",
+  "problem": "I was recently told ( Deleting a Class with IDE - cannot delete from Production? ): You cannot delete a class in production directly. You will need delete the class from your sandbox and then deploy the deletions to your production org. When you deploy from sandbox to production, the missing classes will come up in red and you can choose to deploy these deletions to Production. However, I'd like some clarification...",
+  "code": null,
+  "fixed_code": "     <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n     <ApexClass xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n         <apiVersion>23.0</apiVersion>\n         <status>Deleted</status>\n     </ApexClass>",
+  "explanation": "An easy way to do this is as follows: Use an IDE to create a new project and download all classes from production. In the class you want to delete, open the metadata file and change the status of the class to \"deleted\". Save to the server. Observe the status of the class in the example below: You should try this in sandbox and become comfortable with it before attempting it in production. Double-check the class name...",
+  "source_url": "https://salesforce.stackexchange.com/questions/5776/deleting-triggers-classes-from-production"
 }
