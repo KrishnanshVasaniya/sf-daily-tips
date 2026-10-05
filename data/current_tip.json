@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "How Can I Tell the Day of the Week of a Date?",
-  "problem": "I'd like to build in some logic based on the weekday (e.g. Monday, Tuesday, Wednesday) of a given date. How can I identify the date, using either formulas or Apex code?",
-  "code": null,
-  "fixed_code": "// Cast the Date variable into a DateTime\nDateTime myDateTime = (DateTime) myDate;\nString dayOfWeek = myDateTime.format('E');\n// dayOfWeek is Sun, Mon, Tue, etc.",
-  "explanation": "Formulas There isn't a built-in function to do this for you, but you... UPDATE: As of Spring 2018, there's a built-in function for this: WEEKDAY() . It returns an integer where 1 is Sunday, 2 is Monday, 3 is Tuesday, etc. Apex Code You could do the same thing with time deltas, but you can also use the poorly documented DateTime.format() function :",
-  "source_url": "https://salesforce.stackexchange.com/questions/1192/how-can-i-tell-the-day-of-the-week-of-a-date"
+  "category": "SOQL",
+  "problem_title": "Does LAST_N_DAYS:1 Include TODAY?",
+  "problem": "I would like to ask about the definition of LAST_N_DAYS:n For the number n provided, starts 00:00:00 of the current day and continues for the past n days. Is equal to and To be more specific, isn't LAST_N_DAYS in fact LAST_N_DAYS + 1 (Today)?",
+  "code": "CreatedDate = LAST_N_DAYS:1",
+  "fixed_code": "SELECT CreatedDate FROM MyObject__c\nWHERE CreatedDate = LAST_N_DAYS:1\nORDER BY CreatedDate DESC LIMIT 1",
+  "explanation": "In contradiction to what the current documentation claims, you can observe that the LAST_N_DAYS date literal includes today's data . To be sure, I ran this query: And I got back: 2017-08-31T18:16:17.000+0000",
+  "source_url": "https://salesforce.stackexchange.com/questions/190643/does-last-n-days1-include-today"
 }
