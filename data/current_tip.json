@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Deleting Triggers/Classes from Production",
-  "problem": "I was recently told ( Deleting a Class with IDE - cannot delete from Production? ): You cannot delete a class in production directly. You will need delete the class from your sandbox and then deploy the deletions to your production org. When you deploy from sandbox to production, the missing classes will come up in red and you can choose to deploy these deletions to Production. However, I'd like some clarification...",
-  "code": null,
-  "fixed_code": "     <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n     <ApexClass xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n         <apiVersion>23.0</apiVersion>\n         <status>Deleted</status>\n     </ApexClass>",
-  "explanation": "An easy way to do this is as follows: Use an IDE to create a new project and download all classes from production. In the class you want to delete, open the metadata file and change the status of the class to \"deleted\". Save to the server. Observe the status of the class in the example below: You should try this in sandbox and become comfortable with it before attempting it in production. Double-check the class name...",
-  "source_url": "https://salesforce.stackexchange.com/questions/5776/deleting-triggers-classes-from-production"
+  "category": "SOQL",
+  "problem_title": "SObjectException No More. Intentional Change?",
+  "problem": "I found a pretty surprising change in platform behavior today. Minimum Viable Reproduction (MVR) Script It's simple to reproduce. Just run this script in Execute Anonymous : Expected Behavior There should be an uncaught exception. Execute Anonymous Error Line: 3, Column: 1 System.SObjectException: SObject row was retrieved via SOQL without querying the requested field: Account.Name Observed Behavior There is no...",
+  "code": "Account a = [SELECT Id FROM Account LIMIT 1];\na.Phone = '1111111111';\nsystem.debug(a.Name);",
+  "fixed_code": "sobject so = [SELECT Id FROM Contact LIMIT 1]; \nSystem.debug(so.get('Name')); ",
+  "explanation": "Support has agreed that this behavior is a bug and informed me there is an ETA to fix it (though they did not share that timeline). They did not share if a Known Issue was created, but it looks like this issue was reported as early as last year: System.SObjectException is not thrown while executing piece of apex code without querying that field Summary System.SObjectException is not thrown while executing below apex...",
+  "source_url": "https://salesforce.stackexchange.com/questions/160112/sobjectexception-no-more-intentional-change"
 }
