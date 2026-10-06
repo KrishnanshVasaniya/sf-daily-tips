@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "Apex",
-  "problem_title": "Is it possible to test apex that relies on field history tracking?",
-  "problem": "I have some code that relies on field history tracking by querying the History for a custom object. This works fine, but it appears that the history records aren't created during the test so none of my tests will pass.",
-  "code": null,
-  "fixed_code": "@isTest\npublic class AccountTest {\n@isTest\n    private static void  testOne(){\n     Account acc = new Account(Name = 'Hello', Type='Other');\n     insert acc;\n     Test.startTest();\nacc.Type = 'Prospect';\nupdate acc;\nTest.stopTest();\n...",
-  "explanation": "I had a suspicion (remember reading somewhere) that Field History Tracking cannot be tested in a Unit Test Class. A bit of Developer Board surfing threw up this post which confirmed that since none of the data is actually committed during a Unit Test, its not possible to Unit Test Field History Tracking. http://boards.developerforce.com/t5/Visualforce-Development/Unit-Testing-and-History-Table/td-p/142422 The...",
-  "source_url": "https://salesforce.stackexchange.com/questions/4007/is-it-possible-to-test-apex-that-relies-on-field-history-tracking"
+  "category": "SOQL",
+  "problem_title": "How to query 'Value' of a picklist rather than the 'API NAME', using SOQL?",
+  "problem": "I am using SOQL to query the opportunity. When I use the query, I am getting the values under the API Name of the picklist items. How to get the value from the Values of the picklist?",
+  "code": "SELECT CUSTOM_PICK_LIST_COL__C FROM OPPORTUNITY",
+  "fixed_code": null,
+  "explanation": "You can use toLabel() to convert the picklist api name to a label: SELECT toLabel(CUSTOM_PICK_LIST_COL__C) FROM OPPORTUNITY",
+  "source_url": "https://salesforce.stackexchange.com/questions/162771/how-to-query-value-of-a-picklist-rather-than-the-api-name-using-soql"
 }
