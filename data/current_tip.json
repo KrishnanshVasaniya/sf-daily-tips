@@ -1,10 +1,10 @@
 {
   "id": "daily",
-  "category": "SOQL",
-  "problem_title": "SObjectException No More. Intentional Change?",
-  "problem": "I found a pretty surprising change in platform behavior today. Minimum Viable Reproduction (MVR) Script It's simple to reproduce. Just run this script in Execute Anonymous : Expected Behavior There should be an uncaught exception. Execute Anonymous Error Line: 3, Column: 1 System.SObjectException: SObject row was retrieved via SOQL without querying the requested field: Account.Name Observed Behavior There is no...",
-  "code": "Account a = [SELECT Id FROM Account LIMIT 1];\na.Phone = '1111111111';\nsystem.debug(a.Name);",
-  "fixed_code": "sobject so = [SELECT Id FROM Contact LIMIT 1]; \nSystem.debug(so.get('Name')); ",
-  "explanation": "Support has agreed that this behavior is a bug and informed me there is an ETA to fix it (though they did not share that timeline). They did not share if a Known Issue was created, but it looks like this issue was reported as early as last year: System.SObjectException is not thrown while executing piece of apex code without querying that field Summary System.SObjectException is not thrown while executing below apex...",
-  "source_url": "https://salesforce.stackexchange.com/questions/160112/sobjectexception-no-more-intentional-change"
+  "category": "Apex",
+  "problem_title": "Is it possible to test apex that relies on field history tracking?",
+  "problem": "I have some code that relies on field history tracking by querying the History for a custom object. This works fine, but it appears that the history records aren't created during the test so none of my tests will pass.",
+  "code": null,
+  "fixed_code": "@isTest\npublic class AccountTest {\n@isTest\n    private static void  testOne(){\n     Account acc = new Account(Name = 'Hello', Type='Other');\n     insert acc;\n     Test.startTest();\nacc.Type = 'Prospect';\nupdate acc;\nTest.stopTest();\n...",
+  "explanation": "I had a suspicion (remember reading somewhere) that Field History Tracking cannot be tested in a Unit Test Class. A bit of Developer Board surfing threw up this post which confirmed that since none of the data is actually committed during a Unit Test, its not possible to Unit Test Field History Tracking. http://boards.developerforce.com/t5/Visualforce-Development/Unit-Testing-and-History-Table/td-p/142422 The...",
+  "source_url": "https://salesforce.stackexchange.com/questions/4007/is-it-possible-to-test-apex-that-relies-on-field-history-tracking"
 }
